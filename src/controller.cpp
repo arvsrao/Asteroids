@@ -2,7 +2,7 @@
 #include "Player.h"
 #include <vector>
 
-void Controller::doKeyDown(SDL_KeyboardEvent *event, Renderer& renderer, Player &player, std::deque<std::unique_ptr<PhaserBlast>>& blasts) {
+void Controller::doKeyDown(SDL_KeyboardEvent *event, Renderer& renderer, Player &player, std::deque<std::shared_ptr<PhaserBlast>>& blasts) {
 
     switch (event->keysym.scancode) {
         case SDL_SCANCODE_UP:
@@ -33,7 +33,7 @@ void Controller::doKeyDown(SDL_KeyboardEvent *event, Renderer& renderer, Player 
     renderer.wrapEntityCoordinates(player);
 }
 
-void Controller::handleInput(Renderer& renderer, Player &player, std::deque<std::unique_ptr<PhaserBlast>>& blasts, bool& running) {
+void Controller::handleInput(Renderer& renderer, Player &player, std::deque<std::shared_ptr<PhaserBlast>>& blasts, bool& running) {
     SDL_Event event;
 
     while (SDL_PollEvent(&event))

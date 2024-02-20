@@ -3,6 +3,9 @@
 
 #include <algorithm>
 #include <SDL.h>
+#include "GameObject.h"
+
+enum EntityType { PLAYER, ASTEROID, BLAST };
 
 class RenderableEntity {
 
@@ -23,10 +26,14 @@ public:
     void setY(int y);
     virtual void setAngle(int angle);
 
+protected:
+    EntityType _type;
+
 private:
     int x_, y_, angle_;
     // SDL_Texture* texture_;
     static inline const std::unique_ptr<SDL_Point> center_;
+
 };
 
 

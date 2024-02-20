@@ -4,10 +4,11 @@
 #include <list>
 #include <deque>
 #include <thread>
-#include <mutex>
+#include <future>
 #include "controller.h"
 #include "Asteroid.h"
-#include "Explosion.h"
+
+class Explosion;
 
 class RandomNumberBetween
 {
@@ -19,32 +20,29 @@ private:
     std::uniform_int_distribution<int> distribution_;
 };
 
-class Game {
+class Game : public GameObject {
 public:
 
     Game(const int player_increment, const int rotation_increment); //, const int blast_increment_);
     ~Game();
-    Player& getPlayer();
 
     void run(Renderer &renderer, Controller& controller, int target_frame_duration);
 
 private:
-    Player _player;
-    int move_increment_;
+    std::shared_ptr<Player> _player;
     bool _running{true};
 
-    std::mutex _mutex;
-    std::thread _th;
+    std::vector<std::thread> _threads;
 
     RandomNumberBetween _randomNumberBetweenZeroAndTwo;
-    std::deque<std::unique_ptr<PhaserBlast>> _blasts;
-    std::deque<std::unique_ptr<Asteroid>> _asteroids;
-    std::list<Explosion> _explosions;
+    std::deque<std::shared_ptr<PhaserBlast>> _blasts;
+    std::deque<std::shared_ptr<Asteroid>> _asteroids;
+    std::deque<Explosion> _explosions;
+    std::deque<std::future<Explosion>> _futures;
 
     void renderAsteroids(Renderer &renderer, SDL_Texture *texture);
     void renderPhaserBlasts(Renderer& renderer, SDL_Texture* texture);
     void spawn(Renderer& renderer);
-
 
     void renderExplosions(Renderer &renderer, SDL_Texture *texture);
 

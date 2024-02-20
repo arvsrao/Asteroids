@@ -2,10 +2,14 @@
 #define ASTEROIDS_ASTEROID_H
 
 #include <random>
+#include <thread>
+#include <deque>
 #include "RenderableEntity.h"
 #include "PhaserBlast.h"
+#include "Player.h"
+#include "GameObject.h"
 
-class Asteroid : public RenderableEntity {
+class Asteroid : public RenderableEntity, GameObject {
 public:
     Asteroid(const int idx, const double period, int x, int y);
 
@@ -29,6 +33,9 @@ public:
 
     bool collidesWith(RenderableEntity& other);
     void setCollision();
+
+    Explosion checkForCollision(const std::shared_ptr<Player> player, std::deque<std::shared_ptr<PhaserBlast>>& blasts);
+
     bool isHit();
 
 private:
@@ -41,6 +48,8 @@ private:
     bool _hit{false};
     int _identifier;
     double _PERIOD, _START_Y;
+
+    std::mutex _mtx;
 
 };
 

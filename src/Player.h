@@ -10,11 +10,11 @@
 class Player : public RenderableEntity {
 
 public:
-    SDL_Texture* texture;
+    //SDL_Texture* texture;
 
     Player(const int move_increment, const int rotation_increment);
 
-    std::unique_ptr<PhaserBlast> fire() const;
+    std::shared_ptr<PhaserBlast> fire() const;
     void rotateClockwise();
     void rotateCounterClockwise();
     void moveUp();
@@ -26,6 +26,7 @@ public:
     int getHeight() const;
 
     void incrementScore();
+    void registerHit();
     int getScore() const;
     int getHealth() const;
 
@@ -38,9 +39,7 @@ private:
     static constexpr int w = 111;
     static constexpr int h = 111;
 
-    int health_, score_;
-    std::list<std::unique_ptr<Explosion>> _explosions;
-
+    int health_{3}, score_{0};
 };
 
 #endif //ASTEROIDS_PLAYER_H
