@@ -1,0 +1,172 @@
+#include <iostream>
+#include <chrono>
+#include "Game.h"
+#include "ThreadSafeQueue.cpp"
+
+using namespace std::chrono;
+
+Game::Game(std::shared_ptr<Player>& player, std::shared_ptr<PhaserBlastQueuePointer> phaserBlasts):
+        _running(std::make_shared<bool>(true)),
+        _player(player),
+        _phaserBlasts(phaserBlasts),
+        generateWaitTime{RandomNumberBetween(1, 3)} {}
+
+Game::Game(const int player_increment, const int rotation_increment):
+        _running(std::make_shared<bool>(true)),
+        _phaserBlasts(std::make_shared<PhaserBlastQueuePointer>()),
+        generateWaitTime{RandomNumberBetween(1, 3)},
+        _player(std::make_shared<Player>(player_increment, rotation_increment)) {}
+
+SDL_Rect extractBoundingBox(SDL_Texture* texture) {
+    SDL_Rect dest;
+    SDL_QueryTexture(texture, nullptr, nullptr, &dest.w, &dest.h);
+    return dest;
+}
+
+// function which is executed in a thread
+void Game::spawn(Renderer& renderer)
+{
+    int waitTime = this->generateWaitTime();
+    auto start = high_resolution_clock::now();
+    int idx = 0;
+
+    while(*_running) {
+
+        auto timeDelta = duration_cast<seconds>(high_resolution_clock::now() - start);
+        if (timeDelta.count() > waitTime) {
+
+            // spawn a new asteroid on its own thread with reference to the player so it can detect collisions.
+            // The asteroid would move with each frame but the detection thread would wait until a collision is
+            // registered.
+            _asteroids.push(
+                    std::make_shared<Asteroid>(idx++,4.0 * M_PI / (double) renderer.getScreenWidth(),
+                                               renderer.getScreenWidth(),
+                                               renderer.generateY()
+                                               )
+            );
+
+            // kick off asteroid collision checking.
+            auto ftr =
+                    std::async(&Asteroid::checkForCollision,
+                               _asteroids.back(),
+                               _phaserBlasts,_player,
+                               _running,
+                               [&](Asteroid& asteroid) { return !renderer.outsideScreen(asteroid); }
+                               );
+            _threads.emplace_back(&Game::detectCollision, this, std::move(ftr));
+
+            waitTime = generateWaitTime();
+            start = high_resolution_clock::now();
+        }
+
+        std::this_thread::sleep_for(std::chrono::microseconds(100));
+    }
+}
+
+/**  */
+void Game::detectCollision(std::future<std::optional<Explosion>>&& ftr) {
+    auto explosion = ftr.get();
+    if (explosion.has_value()) {
+        _explosions.push(std::move(explosion.value()));
+    }
+
+    // print id of the current thread
+    std::unique_lock<std::mutex> lck(_mutex);
+    std::cout << "Game::detectCollision thread id = " << std::this_thread::get_id() << std::endl;
+    lck.unlock();
+}
+
+/** Render and move Asteroids. */
+void Game::renderAsteroids(Renderer& renderer, std::function<void(Asteroid* rock)> render) {
+    _asteroids.foreach([&](std::shared_ptr<Asteroid>& rock) {
+        rock->move();
+        render(rock.get());
+    });
+    _asteroids.filter([&](std::shared_ptr<Asteroid>& rock) {
+                return !renderer.outsideScreen(*rock);
+    });
+}
+
+/** Move and render PhaserBlasts */
+void Game::renderPhaserBlasts(Renderer& renderer, SDL_Texture* texture) {
+    _phaserBlasts->foreach([&](std::unique_ptr<PhaserBlast>& b) {
+        b->move();
+        renderer.renderTexture(texture, *b);
+    });
+    _phaserBlasts->filter([&](std::unique_ptr<PhaserBlast>& b) {
+        return !renderer.outsideScreen(*b);
+    });
+}
+
+void Game::renderExplosions(Renderer& renderer, SDL_Texture* texture) {
+    _explosions.filter([&](Explosion& ex) { return ex.isFrameCountPositive();} );
+    _explosions.foreach([&](Explosion& ex) { return renderer.renderTexture(texture, ex); });
+}
+
+/** The main game loop. */
+void Game::run(Renderer& renderer, const std::shared_ptr<Controller>& controller, int target_frame_duration) {
+
+    Uint32 frame_start, frame_end, frame_duration;
+    int frame_count = 0;
+
+    auto player_texture = renderer.loadImage("../resources/starship-enterprise.png");
+    auto background = renderer.loadImage("../resources/low-angle-shot-mesmerizing-starry-sky-klein.png");
+    auto phaser_texture = renderer.loadImage("../resources/phaser.png");
+    auto asteroid_texture = renderer.loadImage("../resources/asteroid.png");
+    auto broken_asteroid_texture = renderer.loadImage("../resources/broken-asteroid-2.png");
+    auto explosion_texture = renderer.loadImage("../resources/tiny-explosion.png");
+
+    // render asteroids depending on whether they've been hit
+    auto renderAsteroidTexture = [&](Asteroid* rock) {
+        if (rock->isHit()) renderer.renderTexture(broken_asteroid_texture, *rock);
+        else renderer.renderTexture(asteroid_texture, *rock);
+    };
+
+    // start asteroid spawning on its own thread.
+    _threads.emplace_back(&Game::spawn, this, std::ref(renderer));
+
+    while (*_running) {
+
+        frame_start = SDL_GetTicks();
+
+        renderer.clear();
+        controller->handleInput(renderer, *_running);
+        renderer.drawBackground(background);
+        renderer.renderTexture(player_texture, *_player);
+
+        // move & render asteroids, phaser blasts, and explosions
+        renderAsteroids(renderer, renderAsteroidTexture);
+        renderPhaserBlasts(renderer, phaser_texture);
+        renderExplosions(renderer, explosion_texture);
+
+
+        // Keep track of how long each loop through the input/update/render cycle takes.
+        frame_end = SDL_GetTicks();
+        frame_duration = frame_end - frame_start;
+        frame_count++;
+
+//        // After every second, update the window title.
+//        if (frame_end - title_timestamp >= 1000) {
+//            frame_count = 0;
+//            title_timestamp = frame_end;
+//        }
+
+        // If the time for this frame is too small (i.e. frame_duration is
+        // smaller than the target ms_per_frame), delay the loop to
+        // achieve the correct frame rate.
+        if (frame_duration < target_frame_duration) {
+            SDL_Delay(target_frame_duration - frame_duration);
+        }
+
+       // SDL_Surface* text;
+        // Set color to red
+        //SDL_Color color = { 250, 20, 20 };
+
+        renderer.present(_player->getScore(), _player->getHealth());
+    }
+}
+
+Game::~Game() {
+    *_running = false;
+    for (auto& th : _threads) th.join();
+}

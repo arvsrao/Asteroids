@@ -1,6 +1,7 @@
 #ifndef ASTEROIDS_PLAYER_H
 #define ASTEROIDS_PLAYER_H
 
+#include <set>
 #include <SDL.h>
 #include "PhaserBlast.h"
 #include "Explosion.h"
@@ -14,7 +15,7 @@ public:
 
     Player(const int move_increment, const int rotation_increment);
 
-    std::shared_ptr<PhaserBlast> fire() const;
+    std::unique_ptr<PhaserBlast> fire() const;
     void rotateClockwise();
     void rotateCounterClockwise();
     void moveUp();
@@ -26,7 +27,7 @@ public:
     int getHeight() const;
 
     void incrementScore();
-    void registerHit();
+    void registerHit(int identifier);
     int getScore() const;
     int getHealth() const;
 
@@ -39,7 +40,9 @@ private:
     static constexpr int w = 111;
     static constexpr int h = 111;
 
-    int health_{3}, score_{0};
+    std::set<int> asteroidIdentifiers;
+
+    int _health{3}, score_{0};
 };
 
 #endif //ASTEROIDS_PLAYER_H

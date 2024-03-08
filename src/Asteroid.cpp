@@ -1,11 +1,11 @@
 #include "Asteroid.h"
 #include "cmath"
+#include <optional>
+#include <thread>
 #include <iostream>
-#include <future>
 
 Asteroid::Asteroid(const int idx, const double period, int x, int y):
         RenderableEntity(x, y,0),
-        GameObject(),
         _identifier(idx),
         _PERIOD(period),
         _START_Y((double)y) {
@@ -14,7 +14,6 @@ Asteroid::Asteroid(const int idx, const double period, int x, int y):
 
 Asteroid::Asteroid(const Asteroid& other):
         RenderableEntity(other.getX(), other.getY(), 0),
-        GameObject(),
         _identifier(other.getIdentifier()),
         _PERIOD(other.getPeriod()),
         _START_Y((double)other.getY()){
@@ -23,7 +22,6 @@ Asteroid::Asteroid(const Asteroid& other):
 
 Asteroid::Asteroid(const Asteroid&& other):
         RenderableEntity(other.getX(), other.getY(), 0),
-        GameObject(),
         _identifier(other.getIdentifier()),
         _PERIOD(other.getPeriod()),
         _START_Y((double)other.getY()){
@@ -71,30 +69,45 @@ double Asteroid::getPeriod() const {
     return _PERIOD;
 }
 
-Explosion Asteroid::checkForCollision(const std::shared_ptr<Player> player, std::deque<std::shared_ptr<PhaserBlast>>& blasts) {
+/**
+ * Detect collisions with a specific Asteroid instance.
+ *
+ * @param phaserBlasts is a collection owned by the function because it may remove phaser blasts that collide with this.
+ * @param player is not owned by the function and is used only check for collision with the Ásteroid.
+ * @param running is boolean representing the state of the game. True if the game is being played, false otherwise.
+ * @param isInsideWindow is a predicate for determining if the Asteroid is visible; if not no need to check for collisions.
+ * @return an Explosion in case of a collision, None otherwise.
+ */
+std::optional<Explosion> Asteroid::checkForCollision(
+        const std::shared_ptr<PhaserBlastQueuePointer> phaserBlasts,
+        const std::shared_ptr<Player> player, // shouldn't own the player
+        const std::shared_ptr<bool> running, // shouldn't own the ref
+        const std::function<bool(Asteroid&)>& isInsideWindow) {
 
-    while(true) {
-
-        std::lock_guard<std::mutex> lock(_mutex);
+    while(isInsideWindow(*this) && *running) {
 
         // register player hit by reducing health.
-        if (this->collidesWith(*player)) player->registerHit();
+        if (this->collidesWith(*player)) player->registerHit(this->getIdentifier());
 
-         for (size_t idy = 0; idy < blasts.size(); idy++) {
-            auto blast = std::move(blasts.front());
-            blasts.pop_front();
-            if (this->collidesWith(*blast)) {
-                player->incrementScore();
-                _hit = true;
-            } else blasts.push_back(std::move(blast));
+        if (phaserBlasts->filter([&](std::unique_ptr<PhaserBlast>& b) { return !this->collidesWith(*b); })) {
+            player->incrementScore();
         }
 
-        if (this->isHit()) return {this->getY(), this->getY()};
+        if (this->isHit()) {
+            return Explosion {this->getX(), this->getY() };
+        }
         std::this_thread::sleep_for(std::chrono::microseconds(10));
     }
+    return {};
 }
 
-bool Asteroid::isHit() { return _hit; }
+Asteroid::~Asteroid() {
+    std::cout << "destructing asteroid: " << _identifier << "\n";
+}
+
+bool Asteroid::isHit() const {
+    return _hit;
+}
 
 bool Asteroid::collidesWith(RenderableEntity& other) {
      _hit = RenderableEntity::collidesWith(other);

@@ -1,15 +1,15 @@
 #ifndef ASTEROIDS_ASTEROID_H
 #define ASTEROIDS_ASTEROID_H
 
-#include <random>
-#include <thread>
-#include <deque>
-#include "RenderableEntity.h"
-#include "PhaserBlast.h"
 #include "Player.h"
-#include "GameObject.h"
+#include "RenderableEntity.h"
+#include "ThreadSafeQueue.h"
 
-class Asteroid : public RenderableEntity, GameObject {
+/** Type alias for the phaser blast queue. It is meant to be shared. */
+using PhaserBlastPointer      = std::unique_ptr<PhaserBlast>;
+using PhaserBlastQueuePointer = ThreadSafeQueue<PhaserBlastPointer>;
+
+class Asteroid : public RenderableEntity {
 public:
     Asteroid(const int idx, const double period, int x, int y);
 
@@ -25,7 +25,10 @@ public:
     // move assignment operator
     Asteroid& operator=(const Asteroid&& rhs);
 
-    virtual void move();
+    // desctructor
+    ~Asteroid();
+
+    void move();
     int getWidth() const;
     int getHeight() const;
     int getIdentifier() const;
@@ -34,9 +37,13 @@ public:
     bool collidesWith(RenderableEntity& other);
     void setCollision();
 
-    Explosion checkForCollision(const std::shared_ptr<Player> player, std::deque<std::shared_ptr<PhaserBlast>>& blasts);
+    std::optional<Explosion> checkForCollision(
+            const std::shared_ptr<PhaserBlastQueuePointer> phaserBlasts,
+            const std::shared_ptr<Player> player,
+            const std::shared_ptr<bool> running,
+            const std::function<bool(Asteroid&)>& isInsideWindow);
 
-    bool isHit();
+    bool isHit() const;
 
 private:
 
@@ -48,8 +55,6 @@ private:
     bool _hit{false};
     int _identifier;
     double _PERIOD, _START_Y;
-
-    std::mutex _mtx;
 
 };
 

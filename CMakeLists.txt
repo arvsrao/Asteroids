@@ -2,6 +2,10 @@ cmake_minimum_required(VERSION 3.24)
 project(asteroids)
 
 set(CMAKE_CXX_STANDARD 17)
+set(CMAKE_CXX_STANDARD_REQUIRED ON)
+
+set(CXX_FLAGS "-Wall")
+set(CMAKE_CXX_FLAGS, "${CXX_FLAGS}")
 
 find_package(SDL2 REQUIRED)
 find_package(SDL2_image REQUIRED)

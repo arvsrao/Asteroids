@@ -3,7 +3,6 @@
 
 #include <algorithm>
 #include <SDL.h>
-#include "GameObject.h"
 
 enum EntityType { PLAYER, ASTEROID, BLAST };
 
@@ -31,7 +30,6 @@ protected:
 
 private:
     int x_, y_, angle_;
-    // SDL_Texture* texture_;
     static inline const std::unique_ptr<SDL_Point> center_;
 
 };

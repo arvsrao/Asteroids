@@ -1,12 +1,11 @@
 #include "RenderableEntity.h"
 #include "util.h"
 
-
 RenderableEntity::RenderableEntity() : x_(0), y_(0), angle_(0) {}
 
 RenderableEntity::RenderableEntity(int x, int y, int angle) : x_(x), y_(y), angle_(angle) {};
 
-int RenderableEntity::getX() const { return x_; }
+ int RenderableEntity::getX() const { return x_; }
 
 int RenderableEntity::getY() const { return y_; }
 

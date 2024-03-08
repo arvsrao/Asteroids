@@ -7,8 +7,8 @@ Player::Player(const int move_increment, const int rotation_increment):
         MOVE_INCREMENT_(move_increment),
         ROTATION_INCREMENT_DEGREES_(rotation_increment){}
 
-std::shared_ptr<PhaserBlast> Player::fire() const {
-    return std::make_shared<PhaserBlast>(
+std::unique_ptr<PhaserBlast> Player::fire() const {
+    return std::make_unique<PhaserBlast>(
             (getX() + 55) + static_cast<int>(42.0 * cos(math::toRadians(360 - getAngle()))),
             (getY() + 55) - static_cast<int>(45.0 * sin(math::toRadians(360 - getAngle()))),
             getAngle() );
@@ -44,12 +44,12 @@ int Player::getHeight() const {
 
 int Player::getScore() const { return score_; }
 
-int Player::getHealth() const { return health_; }
+int Player::getHealth() const { return _health; }
 
 bool Player::collidesWith(RenderableEntity &other) {
 
     if (RenderableEntity::collidesWith(other)) {
-        health_ -= 1;
+        _health -= 1;
         return true;
     }
     return false;
@@ -57,6 +57,9 @@ bool Player::collidesWith(RenderableEntity &other) {
 
 void Player::incrementScore() { ++score_; }
 
-void Player::registerHit() {
-    health_ -= 1;
+void Player::registerHit(int identifier) {
+    if (!asteroidIdentifiers.count(identifier)) {
+        _health -= 1;
+    }
+    asteroidIdentifiers.insert(identifier);
 }

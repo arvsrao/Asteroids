@@ -10,7 +10,7 @@ void Renderer::clear() {
     SDL_RenderClear(renderer_);
 }
 
-int Renderer::generateY() { return distribution_(random_engine_); }
+int Renderer::generateY() { return _randomY(); }
 
 void Renderer::present(int score, int frame_count) const {
     auto msg = "SCORE: " + std::to_string(score) + " | HEALTH: " + std::to_string(frame_count);
@@ -22,10 +22,10 @@ bool Renderer::outsideScreen(const RenderableEntity& entity) const {
     return entity.getX() < -50 || entity.getY() < -50 || entity.getX() > SCREEN_WIDTH_ || entity.getY() > SCREEN_HEIGHT_ + 50;
 }
 
-void Renderer::wrapEntityCoordinates(Player& player) const {
+void Renderer::wrapEntityCoordinates(Player* player) const {
     // the ship should wrap around screen boundaries
-    player.setX(math::modulo(player.getX(), SCREEN_WIDTH_));
-    player.setY(math::modulo(player.getY(), SCREEN_HEIGHT_));
+    player->setX(math::modulo(player->getX(), SCREEN_WIDTH_));
+    player->setY(math::modulo(player->getY(), SCREEN_HEIGHT_));
 }
 
 SDL_Texture* Renderer::loadImage(const char *filename) {
@@ -42,7 +42,7 @@ SDL_Texture* Renderer::loadImage(const char *filename) {
  * @param angle the texture is rotated about the provided center
  * @param center the point about which the texture is rotated
  */
-void Renderer::renderTexture(SDL_Texture *texture, RenderableEntity& entity) {
+void Renderer::renderTexture(SDL_Texture *texture, const RenderableEntity& entity) {
     SDL_Rect dest;
     dest.x = entity.getX();
     dest.y = entity.getY();
@@ -90,16 +90,14 @@ void Renderer::init() {
 
 Renderer::Renderer(const int h, const int w, const char* background_filename) : SCREEN_HEIGHT_(h), SCREEN_WIDTH_(w), window_(nullptr),
                                                renderer_(nullptr),
-                                               random_engine_{std::random_device{}()},
-                                               distribution_{0,h},
+                                               _randomY(RandomNumberBetween{0,h}),
                                                background_(loadImage(background_filename)) {
     init();
 }
 
 Renderer::Renderer(const int h, const int w) : SCREEN_HEIGHT_(h), SCREEN_WIDTH_(w), window_(nullptr),
                                                renderer_(nullptr),
-                                               random_engine_{std::random_device{}()},
-                                               distribution_{0, h },
+                                               _randomY(RandomNumberBetween{0,h}),
                                                background_(loadImage("../resources/low-angle-shot-mesmerizing-starry-sky-klein.png")){
     init();
 }

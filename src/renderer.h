@@ -3,7 +3,7 @@
 
 #include <SDL.h>
 #include "Player.h"
-#include <random>
+#include "RandomNumberBetween.h"
 
 class Renderer {
 public:
@@ -14,7 +14,7 @@ public:
     void clear();
     void drawBackground(SDL_Texture *texture);
     void present(int score, int frame_count) const;
-    void renderTexture(SDL_Texture *texture, RenderableEntity& entity);
+    void renderTexture(SDL_Texture *texture, const RenderableEntity& entity);
 
     int  getScreenWidth();
     int  generateY();
@@ -22,7 +22,7 @@ public:
 
     bool outsideScreen(const RenderableEntity& entity) const;
 
-    void wrapEntityCoordinates(Player &player) const;
+    void wrapEntityCoordinates(Player *player) const;
 
     ~Renderer();
 
@@ -46,8 +46,8 @@ private:
 
     void init();
 
-    std::mt19937 random_engine_;
-    std::uniform_int_distribution<int> distribution_;
+    RandomNumberBetween _randomY;
+
 };
 
 
