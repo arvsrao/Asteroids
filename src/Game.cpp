@@ -116,6 +116,9 @@ void Game::run(Renderer& renderer, const std::shared_ptr<Controller>& controller
 
     while (*_running) {
 
+        _threads.erase(std::remove_if(_threads.begin(), _threads.end(),
+                                      [](std::thread& th) { return !th.joinable(); }), _threads.end());
+
         frame_start = SDL_GetTicks();
 
         renderer.clear();

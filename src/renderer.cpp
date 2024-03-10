@@ -124,7 +124,7 @@ void Renderer::init() {
     }
 
     //Open the _font
-    _font = TTF_OpenFont("../resources/arcadeclassic/arcade_classic.ttf", 28);
+    _font = TTF_OpenFont("../resources/fonts/arcade_classic.ttf", 28);
     if(_font == nullptr) {
         printf("Failed to load lazy _font! SDL_ttf Error: %s\n", TTF_GetError());
     }
