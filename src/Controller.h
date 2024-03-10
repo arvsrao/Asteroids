@@ -22,7 +22,7 @@ private:
     std::shared_ptr<PhaserBlastQueuePointer> _phaserBlasts;
     std::shared_ptr<Player> _player;
 
-    void doKeyDown(SDL_KeyboardEvent *event, Renderer& renderer);
+    void doKeyDown(SDL_KeyboardEvent *event);
 
 };
 #endif //ASTEROIDS_CONTROLLER_H

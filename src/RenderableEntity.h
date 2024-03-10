@@ -4,25 +4,30 @@
 #include <algorithm>
 #include <SDL.h>
 
-enum EntityType { PLAYER, ASTEROID, BLAST };
+enum EntityType { ASTEROID, ASTEROID_FRAGMENTS, PHASER_BLAST, EXPLOSION, PLAYER };
 
 class RenderableEntity {
 
 public:
     RenderableEntity();
-    RenderableEntity(int x, int y, int angle);
+    RenderableEntity(int x, int y, int angle, EntityType type);
+
+    virtual int getWidth() const = 0;
+    virtual int getHeight() const = 0;
+
+    EntityType getEntityType() const;
+    void setEntityType(EntityType e);
+
+    virtual bool collidesWith(RenderableEntity& other);
+
+    SDL_Point* getRotationCenter() const;
 
     int getX() const;
     int getY() const;
-    virtual int getWidth() const = 0;
-    virtual int getHeight() const = 0;
-    virtual bool collidesWith(RenderableEntity& other);
-
-    int getAngle() const;
-    SDL_Point* getRotationCenter() const;
-
     void setX(int x);
     void setY(int y);
+
+    int getAngle() const;
     virtual void setAngle(int angle);
 
 protected:

@@ -5,28 +5,22 @@
 #include <iostream>
 
 Asteroid::Asteroid(const int idx, const double period, int x, int y):
-        RenderableEntity(x, y,0),
+        RenderableEntity(x, y, 0, ASTEROID),
         _identifier(idx),
         _PERIOD(period),
-        _START_Y((double)y) {
-    _type = EntityType::ASTEROID;
-}
+        _START_Y((double)y) {}
 
 Asteroid::Asteroid(const Asteroid& other):
-        RenderableEntity(other.getX(), other.getY(), 0),
+        RenderableEntity(other.getX(), other.getY(), 0, ASTEROID),
         _identifier(other.getIdentifier()),
         _PERIOD(other.getPeriod()),
-        _START_Y((double)other.getY()){
-    _type = EntityType::ASTEROID;
-}
+        _START_Y((double)other.getY()){}
 
 Asteroid::Asteroid(const Asteroid&& other):
-        RenderableEntity(other.getX(), other.getY(), 0),
+        RenderableEntity(other.getX(), other.getY(), 0, ASTEROID),
         _identifier(other.getIdentifier()),
         _PERIOD(other.getPeriod()),
-        _START_Y((double)other.getY()){
-    _type = EntityType::ASTEROID;
-}
+        _START_Y((double)other.getY()){}
 
 Asteroid& Asteroid::operator=(const Asteroid& rhs) {
     if (this != &rhs) {
@@ -94,6 +88,7 @@ std::optional<Explosion> Asteroid::checkForCollision(
         }
 
         if (this->isHit()) {
+            this->setEntityType(ASTEROID_FRAGMENTS);
             return Explosion {this->getX(), this->getY() };
         }
         std::this_thread::sleep_for(std::chrono::microseconds(10));

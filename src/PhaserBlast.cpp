@@ -2,17 +2,17 @@
 #include "PhaserBlast.h"
 
 PhaserBlast::PhaserBlast(int _x, int _y, const int _angle):
-    RenderableEntity(_x, _y,_angle),
+    RenderableEntity(_x, _y,_angle, PHASER_BLAST),
     X_INCREMENT(computeXIncrement(_angle)),
     Y_INCREMENT(computeYIncrement(_angle)) {}
 
 PhaserBlast::PhaserBlast(const PhaserBlast& other):
-            RenderableEntity(other.getX(), other.getY(),other.getAngle()),
+            RenderableEntity(other.getX(), other.getY(),other.getAngle(), PHASER_BLAST),
             X_INCREMENT(computeXIncrement(other.getAngle())),
             Y_INCREMENT(computeYIncrement(other.getAngle())) {}
 
 PhaserBlast::PhaserBlast(const PhaserBlast&& other) noexcept :
-        RenderableEntity(other.getX(), other.getY(),other.getAngle()),
+        RenderableEntity(other.getX(), other.getY(),other.getAngle(), PHASER_BLAST),
         X_INCREMENT(computeXIncrement(other.getAngle())),
         Y_INCREMENT(computeYIncrement(other.getAngle())) {}
 

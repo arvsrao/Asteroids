@@ -2,27 +2,60 @@
 #define ASTEROIDS_RENDERER_H
 
 #include <SDL.h>
+#include <SDL_ttf.h>
 #include "Player.h"
 #include "RandomNumberBetween.h"
+#include <string>
+
+
+struct Textures {
+
+    // background texture
+    SDL_Texture* background;
+
+    // health texture
+    SDL_Texture* health;
+
+    // player texture
+    SDL_Texture* player;
+
+    // asteroid texture
+    SDL_Texture* asteroid;
+
+    // asteroid fragments texture
+    SDL_Texture* asteroidFragments;
+
+    // phaser blast texture
+    SDL_Texture* phaserBlast;
+
+    // explosion texture
+    SDL_Texture* explosion;
+};
 
 class Renderer {
 public:
     Renderer(const int h, const int w);
 
-    Renderer(const int h, const int w, const char *background_filename);
+    Renderer(const int h, const int w, Textures& textures);
 
     void clear();
-    void drawBackground(SDL_Texture *texture);
+    void drawBackground();
+    void renderHealth(int health) const;
     void present(int score, int frame_count) const;
     void renderTexture(SDL_Texture *texture, const RenderableEntity& entity);
 
-    int  getScreenWidth();
+    void renderTexture(const RenderableEntity &entity);
+
+    //Creates image from _font string
+    bool loadFromRenderedText(std::string textureText, SDL_Color textColor);
+
+    int  getScreenWidth() const;
     int  generateY();
     SDL_Texture* loadImage(const char* filename);
 
     bool outsideScreen(const RenderableEntity& entity) const;
 
-    void wrapEntityCoordinates(Player *player) const;
+    void wrapEntityCoordinates(RenderableEntity* entity);
 
     ~Renderer();
 
@@ -30,19 +63,16 @@ private:
     const int SCREEN_WIDTH_, SCREEN_HEIGHT_;
 
     // the window into which stuff is rendered
-    SDL_Window* window_;
+    SDL_Window* _window;
 
     // render for the window
-    SDL_Renderer* renderer_;
+    SDL_Renderer* _renderer;
 
-    // background texture
-    const SDL_Texture* background_;
+    //Globally used _font
+    TTF_Font* _font;
 
-    // background texture
-    const SDL_Texture* player_;
-
-    // background texture
-    const SDL_Texture* phaser_blast_;
+    // background and health textures
+    Textures _textures;
 
     void init();
 

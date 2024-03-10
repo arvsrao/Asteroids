@@ -7,30 +7,34 @@
 #include "util.h"
 
 void Renderer::clear() {
-    SDL_RenderClear(renderer_);
+    SDL_RenderClear(_renderer);
 }
 
 int Renderer::generateY() { return _randomY(); }
 
+int Renderer::getScreenWidth() const {
+    return SCREEN_WIDTH_;
+}
+
 void Renderer::present(int score, int frame_count) const {
     auto msg = "SCORE: " + std::to_string(score) + " | HEALTH: " + std::to_string(frame_count);
-    SDL_SetWindowTitle(window_, msg.c_str());
-    SDL_RenderPresent(renderer_);
+    SDL_SetWindowTitle(_window, msg.c_str());
+    SDL_RenderPresent(_renderer);
 }
 
 bool Renderer::outsideScreen(const RenderableEntity& entity) const {
     return entity.getX() < -50 || entity.getY() < -50 || entity.getX() > SCREEN_WIDTH_ || entity.getY() > SCREEN_HEIGHT_ + 50;
 }
 
-void Renderer::wrapEntityCoordinates(Player* player) const {
+void Renderer::wrapEntityCoordinates(RenderableEntity* entity) {
     // the ship should wrap around screen boundaries
-    player->setX(math::modulo(player->getX(), SCREEN_WIDTH_));
-    player->setY(math::modulo(player->getY(), SCREEN_HEIGHT_));
+    entity->setX(math::modulo(entity->getX(), SCREEN_WIDTH_));
+    entity->setY(math::modulo(entity->getY(), SCREEN_HEIGHT_));
 }
 
 SDL_Texture* Renderer::loadImage(const char *filename) {
     SDL_LogMessage(SDL_LOG_CATEGORY_APPLICATION, SDL_LOG_PRIORITY_INFO, "Loading %s", filename);
-    return IMG_LoadTexture(renderer_, filename);
+    return IMG_LoadTexture(_renderer, filename);
 }
 
 /**
@@ -47,16 +51,49 @@ void Renderer::renderTexture(SDL_Texture *texture, const RenderableEntity& entit
     dest.x = entity.getX();
     dest.y = entity.getY();
     SDL_QueryTexture(texture, nullptr, nullptr, &dest.w, &dest.h);
-    SDL_RenderCopyEx(renderer_, texture, nullptr, &dest, entity.getAngle(), entity.getRotationCenter(), SDL_FLIP_NONE);
+    SDL_RenderCopyEx(_renderer, texture, nullptr, &dest, entity.getAngle(), entity.getRotationCenter(), SDL_FLIP_NONE);
 }
 
-void Renderer::drawBackground(SDL_Texture *texture) {
+void Renderer::renderTexture(const RenderableEntity& entity) {
+
+    switch (entity.getEntityType()) {
+        case PLAYER:
+            renderTexture(_textures.player, entity);
+            break;
+        case ASTEROID:
+            renderTexture(_textures.asteroid, entity);
+            break;
+        case ASTEROID_FRAGMENTS:
+            renderTexture(_textures.asteroidFragments, entity);
+            break;
+        case PHASER_BLAST:
+            renderTexture(_textures.phaserBlast, entity);
+            break;
+        case EXPLOSION:
+            renderTexture(_textures.explosion, entity);
+            break;
+    }
+}
+
+void Renderer::renderHealth(int health) const {
+    SDL_Rect dest;
+    dest.y = 5;
+    dest.w = 25;
+    dest.h = 25;
+
+    for (int idx = 0; idx < health + 1; ++idx) {
+        dest.x = SCREEN_WIDTH_ - 30 * idx;
+        SDL_RenderCopy(_renderer, _textures.health, nullptr, &dest);
+    }
+}
+
+void Renderer::drawBackground() {
     SDL_Rect dest;
     dest.x = 0;
     dest.y = 0;
     dest.w = SCREEN_WIDTH_;
     dest.h = SCREEN_HEIGHT_;
-    SDL_RenderCopy(renderer_, texture, nullptr, &dest);
+    SDL_RenderCopy(_renderer, _textures.background, nullptr, &dest);
 }
 
 void Renderer::init() {
@@ -72,41 +109,65 @@ void Renderer::init() {
         exit(1);
     }
 
-    window_ = SDL_CreateWindow("hello world!!", SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED, SCREEN_WIDTH_,
-                               SCREEN_HEIGHT_, 0);
-    if (window_ == nullptr) {
+    _window = SDL_CreateWindow("hello world!!", SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED, SCREEN_WIDTH_,SCREEN_HEIGHT_, 0);
+    if (_window == nullptr) {
         std::cout << "SDL_CreateWindow error !! " << SDL_GetError() << "\n";
         exit(1);
     }
 
     SDL_SetHint(SDL_HINT_RENDER_SCALE_QUALITY, "linear");
 
-    renderer_ = SDL_CreateRenderer(window_, -1, SDL_RENDERER_ACCELERATED);
-    if (renderer_ == nullptr) {
+    _renderer = SDL_CreateRenderer(_window, -1, SDL_RENDERER_ACCELERATED);
+    if (_renderer == nullptr) {
         std::cout << "SDL_CreateRenderer error !! " << SDL_GetError() << "\n";
         exit(1);
     }
+
+    //Open the _font
+    _font = TTF_OpenFont("../resources/arcadeclassic/arcade_classic.ttf", 28);
+    if(_font == nullptr) {
+        printf("Failed to load lazy _font! SDL_ttf Error: %s\n", TTF_GetError());
+    }
 }
 
-Renderer::Renderer(const int h, const int w, const char* background_filename) : SCREEN_HEIGHT_(h), SCREEN_WIDTH_(w), window_(nullptr),
-                                               renderer_(nullptr),
-                                               _randomY(RandomNumberBetween{0,h}),
-                                               background_(loadImage(background_filename)) {
+Renderer::Renderer(const int h, const int w, Textures& textures) :
+    SCREEN_HEIGHT_(h), SCREEN_WIDTH_(w), _window(nullptr), _renderer(nullptr), _randomY(RandomNumberBetween{0,h}),
+    _textures(textures) {
     init();
 }
 
-Renderer::Renderer(const int h, const int w) : SCREEN_HEIGHT_(h), SCREEN_WIDTH_(w), window_(nullptr),
-                                               renderer_(nullptr),
-                                               _randomY(RandomNumberBetween{0,h}),
-                                               background_(loadImage("../resources/low-angle-shot-mesmerizing-starry-sky-klein.png")){
+Renderer::Renderer(const int h, const int w) :
+    SCREEN_HEIGHT_(h), SCREEN_WIDTH_(w), _window(nullptr), _renderer(nullptr), _randomY(RandomNumberBetween{0,h}) {
     init();
+    _textures = Textures {
+            loadImage("../resources/low-angle-shot-mesmerizing-starry-sky-klein.png"),
+            loadImage("../resources/heart.png"),
+            loadImage("../resources/starship-enterprise.png"),
+            loadImage("../resources/asteroid.png"),
+            loadImage("../resources/asteroid-fragments.png"),
+            loadImage("../resources/phaser.png"),
+            loadImage("../resources/tiny-explosion.png")
+    };
 }
 
 Renderer::~Renderer() {
-    SDL_DestroyRenderer(renderer_);
-    SDL_DestroyWindow(window_);
+    SDL_DestroyRenderer(_renderer);
+    SDL_DestroyWindow(_window);
+    SDL_Quit();
 }
 
-int Renderer::getScreenWidth() {
-    return SCREEN_WIDTH_;
+bool Renderer::loadFromRenderedText(std::string text, SDL_Color textColor) {
+
+    //Render text surface
+    SDL_Surface* textSurface = TTF_RenderText_Solid(_font, text.c_str(), textColor);
+    auto mTexture = SDL_CreateTextureFromSurface(_renderer, textSurface);
+
+    SDL_Rect dest;
+    dest.x = 5;
+    dest.y = 5;
+    SDL_QueryTexture(mTexture, nullptr, nullptr, &dest.w, &dest.h);
+    SDL_RenderCopy(_renderer, _textures.background, nullptr, &dest);
+
+    //Return success
+    return mTexture != nullptr;
 }

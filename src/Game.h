@@ -35,9 +35,9 @@ private:
     RandomNumberBetween generateWaitTime;
 
     void spawn(Renderer& renderer);
-    void renderExplosions(Renderer &renderer, SDL_Texture *texture);
-    void renderAsteroids(Renderer& renderer, std::function<void(Asteroid* rock)> render);
-    void renderPhaserBlasts(Renderer& renderer, SDL_Texture* texture);
+    void renderExplosions(Renderer &renderer);
+    void renderAsteroids(Renderer& renderer);
+    void renderPhaserBlasts(Renderer& renderer);
     void detectCollision(std::future<std::optional<Explosion>>&& ftr);
 };
 

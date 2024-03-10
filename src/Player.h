@@ -11,7 +11,6 @@
 class Player : public RenderableEntity {
 
 public:
-    //SDL_Texture* texture;
 
     Player(const int move_increment, const int rotation_increment);
 

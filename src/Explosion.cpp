@@ -1,6 +1,6 @@
 #include "Explosion.h"
 
-Explosion::Explosion(int x, int y) : RenderableEntity(x, y, 0) {}
+Explosion::Explosion(int x, int y) : RenderableEntity(x, y, 0, EXPLOSION) {}
 
 bool Explosion::isFrameCountPositive() {
     return frame_count-- > 0;

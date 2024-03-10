@@ -8,7 +8,7 @@ Controller::Controller(
         std::shared_ptr<Player> player) :
         _phaserBlasts(phaserBlasts), _player(player) {}
 
-void Controller::doKeyDown(SDL_KeyboardEvent *event, Renderer &renderer) {
+void Controller::doKeyDown(SDL_KeyboardEvent *event) {
 
     switch (event->keysym.scancode) {
         case SDL_SCANCODE_UP:
@@ -35,8 +35,6 @@ void Controller::doKeyDown(SDL_KeyboardEvent *event, Renderer &renderer) {
         default:
             break;
     }
-
-    renderer.wrapEntityCoordinates(_player.get());
 }
 
 void Controller::handleInput(Renderer &renderer, bool& running) {
@@ -47,7 +45,8 @@ void Controller::handleInput(Renderer &renderer, bool& running) {
             case SDL_QUIT:
                 running = false;
             case SDL_KEYDOWN:
-                doKeyDown(&event.key, renderer);
+                doKeyDown(&event.key);
+                renderer.wrapEntityCoordinates(_player.get());
                 break;
             default:
                 break;

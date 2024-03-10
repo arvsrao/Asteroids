@@ -1,5 +1,4 @@
 #include <algorithm>
-#include <iostream>
 #include "ThreadSafeQueue.h"
 
 /** Filter-in PhaserBlasts according satisfying the predicate.

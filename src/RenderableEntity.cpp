@@ -3,7 +3,7 @@
 
 RenderableEntity::RenderableEntity() : x_(0), y_(0), angle_(0) {}
 
-RenderableEntity::RenderableEntity(int x, int y, int angle) : x_(x), y_(y), angle_(angle) {};
+RenderableEntity::RenderableEntity(int x, int y, int angle, EntityType type) : x_(x), y_(y), angle_(angle), _type(type) {};
 
  int RenderableEntity::getX() const { return x_; }
 
@@ -27,4 +27,12 @@ bool RenderableEntity::collidesWith(RenderableEntity &other) {
     auto noXOverlap = getX() > other.getX() + other.getWidth() || getX() + getWidth() < other.getX();
     auto noYOverlap = getY() > other.getY() + other.getHeight() || getY() + getHeight() < other.getY();
     return !noXOverlap && !noYOverlap;
+}
+
+EntityType RenderableEntity::getEntityType() const {
+    return _type;
+}
+
+void RenderableEntity::setEntityType(EntityType e) {
+     _type = e;
 }

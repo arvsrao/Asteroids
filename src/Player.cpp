@@ -3,7 +3,7 @@
 #include "Player.h"
 
 Player::Player(const int move_increment, const int rotation_increment):
-        RenderableEntity(50,250, 0),
+        RenderableEntity(50,250, 0, PLAYER),
         MOVE_INCREMENT_(move_increment),
         ROTATION_INCREMENT_DEGREES_(rotation_increment){}
 
@@ -26,13 +26,21 @@ std::string Player::toString() const {
     return "(" + std::to_string(getX()) + ", " + std::to_string(getX()) +")";
 }
 
-void Player::moveUp() { setY(getY() - MOVE_INCREMENT_); }
+void Player::moveUp() {
+    setY(getY() - MOVE_INCREMENT_);
+}
 
-void Player::moveDown() { setY(getY() + MOVE_INCREMENT_); }
+void Player::moveDown() {
+    setY(getY() + MOVE_INCREMENT_);
+}
 
-void Player::moveLeft() { setX(getX() - MOVE_INCREMENT_); }
+void Player::moveLeft() {
+    setX(getX() - MOVE_INCREMENT_);
+}
 
-void Player::moveRight() { setX(getX() + MOVE_INCREMENT_); }
+void Player::moveRight() {
+    setX(getX() + MOVE_INCREMENT_);
+}
 
 int Player::getWidth() const {
     return w;

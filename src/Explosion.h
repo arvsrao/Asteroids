@@ -12,6 +12,6 @@ public:
     bool isFrameCountPositive();
 
 private:
-    int frame_count {20};
+    int frame_count {30};
 };
 #endif //ASTEROIDS_EXPLOSION_H
