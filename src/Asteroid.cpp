@@ -1,8 +1,10 @@
-#include "Asteroid.h"
 #include "cmath"
 #include <optional>
 #include <thread>
 #include <iostream>
+
+#include "Asteroid.h"
+
 
 Asteroid::Asteroid(const int idx, const double period, int x, int y):
         RenderableEntity(x, y, 0, ASTEROID),

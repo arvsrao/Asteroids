@@ -1,6 +1,8 @@
 #ifndef ASTEROIDS_ASTEROID_H
 #define ASTEROIDS_ASTEROID_H
 
+#include <functional>
+
 #include "Player.h"
 #include "RenderableEntity.h"
 #include "ThreadSafeQueue.h"

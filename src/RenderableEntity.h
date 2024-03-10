@@ -1,6 +1,7 @@
 #ifndef ASTEROIDS_RENDERABLEENTITY_H
 #define ASTEROIDS_RENDERABLEENTITY_H
 
+#include <memory>
 #include <algorithm>
 #include <SDL.h>
 
