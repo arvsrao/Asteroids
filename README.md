@@ -7,10 +7,10 @@
 
 ### How to Play
 
-* Use arrow keys to move starship **up**, **down**, **left**, and **right**.
-* Rotate the ship clockwise by pressing **D**
-* Rotate the ship counterclockwise by pressing **A**.
-* To fire phaser blasts press the **space bar**.
+* Use arrow keys to move starship: :up_arrow:, :down_arrow:, :left_arrow:, and :right_arrow:
+* Rotate the ship clockwise by pressing $\textcolor{orange}{D}$.
+* Rotate the ship counterclockwise by pressing $\textcolor{orange}{A}$.
+* To fire phaser blasts press the $\textcolor{orange}{space bar}$.
 
 ### Build the Project
 
