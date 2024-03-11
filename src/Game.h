@@ -18,7 +18,7 @@ public:
     Game(const int player_increment, const int rotation_increment);
     ~Game();
 
-    void run(Renderer &renderer, const std::shared_ptr<Controller>& controller, int target_frame_duration);
+    void run(Renderer &renderer, const std::shared_ptr<Controller>& controller, uint32_t target_frame_duration);
     void end();
 
 private:

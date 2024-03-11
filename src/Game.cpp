@@ -107,9 +107,9 @@ void Game::renderExplosions(Renderer& renderer) {
 }
 
 /** The main game loop. */
-void Game::run(Renderer& renderer, const std::shared_ptr<Controller>& controller, int target_frame_duration) {
+void Game::run(Renderer& renderer, const std::shared_ptr<Controller>& controller, uint32_t target_frame_duration) {
 
-    Uint32 frame_start, frame_end, frame_duration;
+    uint32_t frame_start, frame_end, frame_duration;
 
     // start asteroid spawning on its own thread.
     _threads.emplace_back(&Game::spawn, this, std::ref(renderer));
