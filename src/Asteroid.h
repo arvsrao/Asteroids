@@ -2,6 +2,7 @@
 #define ASTEROIDS_ASTEROID_H
 
 #include <functional>
+#include <optional>
 
 #include "Player.h"
 #include "RenderableEntity.h"

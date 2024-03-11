@@ -1,5 +1,4 @@
 #include "cmath"
-#include <optional>
 #include <thread>
 #include <iostream>
 

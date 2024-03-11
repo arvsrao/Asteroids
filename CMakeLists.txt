@@ -18,5 +18,6 @@ file(GLOB PROJECT_SRC src/*.cpp) #src/*.h
 
 # Add project executable
 add_executable(asteroids ${PROJECT_SRC})
+string(STRIP ${SDL2_LIBRARIES} SDL2_LIBRARIES)
 include_directories(${SDL2_INCLUDE_DIRS} ${SDL2_TTF_INCLUDE_DIRS} ${SDL2_IMAGE_INCLUDE_DIRS} src)
 target_link_libraries(asteroids ${SDL2_LIBRARIES} ${SDL2_TTF_LIBRARIES} ${SDL2_IMAGE_LIBRARIES})
