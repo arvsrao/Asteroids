@@ -3,9 +3,9 @@
 
 RenderableEntity::RenderableEntity() : x_(0), y_(0), angle_(0) {}
 
-RenderableEntity::RenderableEntity(int x, int y, int angle, EntityType type) : x_(x), y_(y), angle_(angle), _type(type) {};
+RenderableEntity::RenderableEntity(int x, int y, int angle, EntityType type) : _type(type), x_(x), y_(y), angle_(angle) {};
 
- int RenderableEntity::getX() const { return x_; }
+int RenderableEntity::getX() const { return x_; }
 
 int RenderableEntity::getY() const { return y_; }
 
@@ -36,3 +36,5 @@ EntityType RenderableEntity::getEntityType() const {
 void RenderableEntity::setEntityType(EntityType e) {
      _type = e;
 }
+
+RenderableEntity::~RenderableEntity() {}

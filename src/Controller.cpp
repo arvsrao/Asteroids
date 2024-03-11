@@ -1,12 +1,9 @@
+#include <vector>
+
 #include "Controller.h"
 #include "Player.h"
-#include <vector>
-#include "ThreadSafeQueue.cpp"
 
-Controller::Controller(
-        std::shared_ptr<PhaserBlastQueuePointer> phaserBlasts,
-        std::shared_ptr<Player> player) :
-        _phaserBlasts(phaserBlasts), _player(player) {}
+Controller::Controller(std::shared_ptr<Player> player): _player(player) {}
 
 void Controller::doKeyDown(SDL_KeyboardEvent *event) {
 
@@ -30,7 +27,7 @@ void Controller::doKeyDown(SDL_KeyboardEvent *event) {
             _player->rotateCounterClockwise();
             break;
         case SDL_SCANCODE_SPACE:
-            _phaserBlasts->push(std::move(_player->fire()));
+            _player->fire();
             break;
         default:
             break;

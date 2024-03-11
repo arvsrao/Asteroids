@@ -74,9 +74,9 @@ private:
     // background and health textures
     Textures _textures;
 
-    void init();
-
     RandomNumberBetween _randomY;
+
+    void init();
 
 };
 

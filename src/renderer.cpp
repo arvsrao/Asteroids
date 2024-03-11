@@ -131,13 +131,13 @@ void Renderer::init() {
 }
 
 Renderer::Renderer(const int h, const int w, Textures& textures) :
-    SCREEN_HEIGHT_(h), SCREEN_WIDTH_(w), _window(nullptr), _renderer(nullptr), _randomY(RandomNumberBetween{0,h}),
-    _textures(textures) {
+    SCREEN_WIDTH_(w), SCREEN_HEIGHT_(h), _window(nullptr), _renderer(nullptr),
+    _textures(textures), _randomY(RandomNumberBetween{0,h}) {
     init();
 }
 
 Renderer::Renderer(const int h, const int w) :
-    SCREEN_HEIGHT_(h), SCREEN_WIDTH_(w), _window(nullptr), _renderer(nullptr), _randomY(RandomNumberBetween{0,h}) {
+    SCREEN_WIDTH_(w), SCREEN_HEIGHT_(h), _window(nullptr), _renderer(nullptr), _randomY(RandomNumberBetween{0,h}) {
     init();
     _textures = Textures {
             loadImage("../resources/low-angle-shot-mesmerizing-starry-sky-klein.png"),

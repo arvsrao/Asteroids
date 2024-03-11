@@ -1,17 +1,21 @@
 #include <string>
 #include "util.h"
 #include "Player.h"
+#include "ThreadSafeQueue.cpp"
 
-Player::Player(const int move_increment, const int rotation_increment):
+Player::Player(const int move_increment, const int rotation_increment, std::shared_ptr<PhaserBlastQueuePointer> phaserBlasts):
         RenderableEntity(50,250, 0, PLAYER),
         MOVE_INCREMENT_(move_increment),
-        ROTATION_INCREMENT_DEGREES_(rotation_increment){}
+        ROTATION_INCREMENT_DEGREES_(rotation_increment),
+        _phaserBlasts(phaserBlasts){}
 
-std::unique_ptr<PhaserBlast> Player::fire() const {
-    return std::make_unique<PhaserBlast>(
+void Player::fire() const {
+    _phaserBlasts->push(
+            std::make_unique<PhaserBlast>(
             (getX() + 55) + static_cast<int>(42.0 * cos(math::toRadians(360 - getAngle()))),
             (getY() + 55) - static_cast<int>(45.0 * sin(math::toRadians(360 - getAngle()))),
-            getAngle() );
+            getAngle())
+    );
 }
 
 void Player::rotateClockwise() {

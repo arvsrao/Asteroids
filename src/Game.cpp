@@ -15,8 +15,9 @@ Game::Game(std::shared_ptr<Player>& player, std::shared_ptr<PhaserBlastQueuePoin
 Game::Game(const int player_increment, const int rotation_increment):
         _running(std::make_shared<bool>(true)),
         _phaserBlasts(std::make_shared<PhaserBlastQueuePointer>()),
-        generateWaitTime{RandomNumberBetween(1, 3)},
-        _player(std::make_shared<Player>(player_increment, rotation_increment)) {}
+        generateWaitTime{RandomNumberBetween(1, 3)} {
+    _player = std::make_shared<Player>(player_increment, rotation_increment, _phaserBlasts);
+}
 
 SDL_Rect extractBoundingBox(SDL_Texture* texture) {
     SDL_Rect dest;
@@ -109,15 +110,14 @@ void Game::renderExplosions(Renderer& renderer) {
 void Game::run(Renderer& renderer, const std::shared_ptr<Controller>& controller, int target_frame_duration) {
 
     Uint32 frame_start, frame_end, frame_duration;
-    int frame_count = 0;
 
     // start asteroid spawning on its own thread.
     _threads.emplace_back(&Game::spawn, this, std::ref(renderer));
 
     while (*_running) {
 
-        _threads.erase(std::remove_if(_threads.begin(), _threads.end(),
-                                      [](std::thread& th) { return !th.joinable(); }), _threads.end());
+       // _threads.erase(std::remove_if(_threads.begin(), _threads.end(),
+       //                               [](std::thread& th) { return !th.joinable(); }), _threads.end());
 
         frame_start = SDL_GetTicks();
 
@@ -136,7 +136,6 @@ void Game::run(Renderer& renderer, const std::shared_ptr<Controller>& controller
         // Keep track of how long each loop through the input/update/render cycle takes.
         frame_end = SDL_GetTicks();
         frame_duration = frame_end - frame_start;
-        frame_count++;
 
 //        // After every second, update the window title.
 //        if (frame_end - title_timestamp >= 1000) {

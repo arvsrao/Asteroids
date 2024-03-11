@@ -32,13 +32,12 @@ public:
     ~Asteroid();
 
     void move();
-    int getWidth() const;
-    int getHeight() const;
+    int getWidth() const override;
+    int getHeight() const override;
     int getIdentifier() const;
     double getPeriod() const;
 
-    bool collidesWith(RenderableEntity& other);
-    void setCollision();
+    bool collidesWith(RenderableEntity& other) override;
 
     std::optional<Explosion> checkForCollision(
             const std::shared_ptr<PhaserBlastQueuePointer> phaserBlasts,

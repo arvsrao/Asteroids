@@ -12,6 +12,7 @@ class RenderableEntity {
 public:
     RenderableEntity();
     RenderableEntity(int x, int y, int angle, EntityType type);
+    virtual ~RenderableEntity();
 
     virtual int getWidth() const = 0;
     virtual int getHeight() const = 0;
