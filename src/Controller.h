@@ -7,7 +7,7 @@
 
 class Controller {
 public:
-    Controller(std::shared_ptr<Player> player);
+    explicit Controller(std::shared_ptr<Player> player);
 
     void handleInput(Renderer& renderer, bool &running);
 

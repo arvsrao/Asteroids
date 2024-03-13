@@ -3,8 +3,10 @@
 
 #include <SDL.h>
 #include <SDL_ttf.h>
+
 #include "Player.h"
 #include "RandomNumberBetween.h"
+
 #include <string>
 
 
@@ -41,13 +43,13 @@ public:
     void clear();
     void drawBackground();
     void renderHealth(int health) const;
-    void present(int score, int frame_count) const;
+    void present(int count) const;
     void renderTexture(SDL_Texture *texture, const RenderableEntity& entity);
 
     void renderTexture(const RenderableEntity &entity);
 
     //Creates image from _font string
-    bool loadFromRenderedText(std::string textureText, SDL_Color textColor);
+    bool loadFromRenderedText(const std::string& textureText, const SDL_Color& textColor);
 
     int  getScreenWidth() const;
     int  generateY();
@@ -55,7 +57,7 @@ public:
 
     bool outsideScreen(const RenderableEntity& entity) const;
 
-    void wrapEntityCoordinates(RenderableEntity* entity);
+    void wrapEntityCoordinates(RenderableEntity* entity) const;
 
     ~Renderer();
 

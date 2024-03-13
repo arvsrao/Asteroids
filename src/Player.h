@@ -7,7 +7,6 @@
 #include "Explosion.h"
 #include "ThreadSafeQueue.h"
 
-
 #include <list>
 
 /** Type alias for the phaser blast queue. It is meant to be shared. */
@@ -18,7 +17,7 @@ class Player : public RenderableEntity {
 
 public:
 
-    Player(const int move_increment, const int rotation_increment, std::shared_ptr<PhaserBlastQueuePointer> phaserBlasts);
+    explicit Player(const int move_increment, const int rotation_increment, std::shared_ptr<PhaserBlastQueuePointer> phaserBlasts);
 
     void fire() const;
     void rotateClockwise();

@@ -29,9 +29,10 @@ private:
     std::mutex _mutex;
     ThreadSafeQueue<std::shared_ptr<Asteroid>> _asteroids;
     ThreadSafeQueue<Explosion> _explosions;
+    std::vector<std::thread> _threads;
     std::shared_ptr<PhaserBlastQueuePointer> _phaserBlasts;
 
-    std::vector<std::thread> _threads;
+    std::set<std::thread::id> _finished_thread_ids;
     RandomNumberBetween generateWaitTime;
 
     void spawn(Renderer& renderer);

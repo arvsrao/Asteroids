@@ -16,8 +16,8 @@ int Renderer::getScreenWidth() const {
     return SCREEN_WIDTH_;
 }
 
-void Renderer::present(int score, int frame_count) const {
-    auto msg = "SCORE: " + std::to_string(score) + " | HEALTH: " + std::to_string(frame_count);
+void Renderer::present(int count) const {
+    auto msg = "thread count: " + std::to_string(count);
     SDL_SetWindowTitle(_window, msg.c_str());
     SDL_RenderPresent(_renderer);
 }
@@ -26,7 +26,7 @@ bool Renderer::outsideScreen(const RenderableEntity& entity) const {
     return entity.getX() < -50 || entity.getY() < -50 || entity.getX() > SCREEN_WIDTH_ || entity.getY() > SCREEN_HEIGHT_ + 50;
 }
 
-void Renderer::wrapEntityCoordinates(RenderableEntity* entity) {
+void Renderer::wrapEntityCoordinates(RenderableEntity* entity) const {
     // the ship should wrap around screen boundaries
     entity->setX(math::modulo(entity->getX(), SCREEN_WIDTH_));
     entity->setY(math::modulo(entity->getY(), SCREEN_HEIGHT_));
@@ -100,9 +100,6 @@ void Renderer::init() {
 
     IMG_Init(IMG_INIT_PNG | IMG_INIT_JPG);
 
-    // the surface contained by the window
-    // SDL_Surface* surface = nullptr;
-
     // initialize SDL. SDL_Init returns 0 if successful.
     if (SDL_Init(SDL_INIT_VIDEO) < 0) {
         printf("Window could not be created! SDL_Error: %s\n", SDL_GetError());
@@ -124,7 +121,8 @@ void Renderer::init() {
     }
 
     //Open the _font
-    _font = TTF_OpenFont("../resources/fonts/arcade_classic.ttf", 28);
+    TTF_Init();
+    _font = TTF_OpenFont("../resources/fonts/ARCADE_N.TTF", 28);
     if(_font == nullptr) {
         printf("Failed to load lazy _font! SDL_ttf Error: %s\n", TTF_GetError());
     }
@@ -156,7 +154,7 @@ Renderer::~Renderer() {
     SDL_Quit();
 }
 
-bool Renderer::loadFromRenderedText(std::string text, SDL_Color textColor) {
+bool Renderer::loadFromRenderedText(const std::string& text, const SDL_Color& textColor) {
 
     //Render text surface
     SDL_Surface* textSurface = TTF_RenderText_Solid(_font, text.c_str(), textColor);
@@ -166,7 +164,7 @@ bool Renderer::loadFromRenderedText(std::string text, SDL_Color textColor) {
     dest.x = 5;
     dest.y = 5;
     SDL_QueryTexture(mTexture, nullptr, nullptr, &dest.w, &dest.h);
-    SDL_RenderCopy(_renderer, _textures.background, nullptr, &dest);
+    SDL_RenderCopy(_renderer, mTexture, nullptr, &dest);
 
     //Return success
     return mTexture != nullptr;

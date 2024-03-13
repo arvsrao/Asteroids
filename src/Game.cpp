@@ -56,7 +56,9 @@ void Game::spawn(Renderer& renderer)
                                [&](Asteroid& asteroid) { return !renderer.outsideScreen(asteroid); }
                                );
 
+            //std::unique_lock<std::mutex> lck(_mutex);
             _threads.emplace_back(&Game::detectCollision, this, std::move(ftr));
+           // lck.unlock();
 
             waitTime = generateWaitTime();
             start = high_resolution_clock::now();
@@ -74,9 +76,10 @@ void Game::detectCollision(std::future<std::optional<Explosion>>&& ftr) {
     }
 
     // print id of the current thread
-    std::unique_lock<std::mutex> lck(_mutex);
-    std::cout << "Game::detectCollision thread id = " << std::this_thread::get_id() << std::endl;
-    lck.unlock();
+    //std::unique_lock<std::mutex> lck(_mutex);
+    //std::cout << "thread with id = " << std::this_thread::get_id() << " complete." << std::endl;
+    //lck.unlock();
+    //_finished_thread_ids.insert(std::this_thread::get_id());
 }
 
 /** Render and move Asteroids. */
@@ -109,6 +112,9 @@ void Game::renderExplosions(Renderer& renderer) {
 /** The main game loop. */
 void Game::run(Renderer& renderer, const std::shared_ptr<Controller>& controller, uint32_t target_frame_duration) {
 
+    // Set color to orange
+    SDL_Color color = { 255, 165, 25 };
+
     uint32_t frame_start, frame_end, frame_duration;
 
     // start asteroid spawning on its own thread.
@@ -116,8 +122,13 @@ void Game::run(Renderer& renderer, const std::shared_ptr<Controller>& controller
 
     while (*_running) {
 
-       // _threads.erase(std::remove_if(_threads.begin(), _threads.end(),
-       //                               [](std::thread& th) { return !th.joinable(); }), _threads.end());
+        /*
+        std::unique_lock<std::mutex> lck(_mutex);
+        std::for_each(_threads.begin(), _threads.end(), [&](std::thread& th) {
+            if (!th.joinable()) th.join();
+        });
+        lck.unlock();
+        */
 
         frame_start = SDL_GetTicks();
 
@@ -132,6 +143,8 @@ void Game::run(Renderer& renderer, const std::shared_ptr<Controller>& controller
         renderPhaserBlasts(renderer);
         renderExplosions(renderer);
 
+        renderer.loadFromRenderedText("score:" + std::to_string(_player->getScore()), color);
+        renderer.present(static_cast<int>(_threads.size()));
 
         // Keep track of how long each loop through the input/update/render cycle takes.
         frame_end = SDL_GetTicks();
@@ -149,12 +162,6 @@ void Game::run(Renderer& renderer, const std::shared_ptr<Controller>& controller
         if (frame_duration < target_frame_duration) {
             SDL_Delay(target_frame_duration - frame_duration);
         }
-
-        // Set color to red
-        SDL_Color color = { 250, 20, 20 };
-
-        renderer.present(_player->getScore(), _player->getHealth());
-        renderer.loadFromRenderedText("SCORE: " + std::to_string(_player->getScore()), color);
     }
 }
 
