@@ -25,21 +25,18 @@ private:
 
     std::shared_ptr<bool> _running;
     std::shared_ptr<Player> _player;
-
-    std::mutex _mutex;
-    ThreadSafeQueue<std::shared_ptr<Asteroid>> _asteroids;
-    ThreadSafeQueue<Explosion> _explosions;
     std::vector<std::thread> _threads;
+
+    ThreadSafeQueue<std::shared_ptr<Asteroid>> _asteroids;
+    std::shared_ptr<ExplosionQueue> _explosions;
     std::shared_ptr<PhaserBlastQueuePointer> _phaserBlasts;
 
-    std::set<std::thread::id> _finished_thread_ids;
     RandomNumberBetween generateWaitTime;
 
     void spawn(Renderer& renderer);
     void renderExplosions(Renderer &renderer);
     void renderAsteroids(Renderer& renderer);
     void renderPhaserBlasts(Renderer& renderer);
-    void detectCollision(std::future<std::optional<Explosion>>&& ftr);
 };
 
 

@@ -12,6 +12,9 @@
 using PhaserBlastPointer      = std::unique_ptr<PhaserBlast>;
 using PhaserBlastQueuePointer = ThreadSafeQueue<PhaserBlastPointer>;
 
+/** Type alias for the explosion queue. It is meant to be shared. */
+using ExplosionQueue = ThreadSafeQueue<Explosion>;
+
 class Asteroid : public RenderableEntity {
 public:
     Asteroid(const int idx, const double period, int x, int y);
@@ -39,8 +42,16 @@ public:
 
     bool collidesWith(RenderableEntity& other) override;
 
-    std::optional<Explosion> checkForCollision(
+    void checkForCollision(
             const std::shared_ptr<PhaserBlastQueuePointer> phaserBlasts,
+            const std::shared_ptr<ExplosionQueue> explosions,
+            const std::shared_ptr<Player> player,
+            const std::shared_ptr<bool> running,
+            const std::function<bool(Asteroid&)>& isInsideWindow);
+
+    void detectCollision(
+            const std::shared_ptr<PhaserBlastQueuePointer> phaserBlasts,
+            const std::shared_ptr<ExplosionQueue> explosions,
             const std::shared_ptr<Player> player,
             const std::shared_ptr<bool> running,
             const std::function<bool(Asteroid&)>& isInsideWindow);
@@ -56,6 +67,7 @@ private:
 
     bool _hit{false};
     int _identifier;
+    std::thread _thread;
     double _PERIOD, _START_Y;
 
 };

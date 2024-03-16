@@ -3,13 +3,15 @@
 #include <iostream>
 
 #include "Asteroid.h"
-
+#include "ThreadSafeQueue.cpp"
 
 Asteroid::Asteroid(const int idx, const double period, int x, int y):
         RenderableEntity(x, y, 0, ASTEROID),
         _identifier(idx),
         _PERIOD(period),
-        _START_Y((double)y) {}
+        _START_Y((double)y) {
+    std::cout << "creating asteroid #: " + std::to_string(_identifier) << "\n";
+}
 
 Asteroid::Asteroid(const Asteroid& other):
         RenderableEntity(other.getX(), other.getY(), 0, ASTEROID),
@@ -73,8 +75,9 @@ double Asteroid::getPeriod() const {
  * @param isInsideWindow is a predicate for determining if the Asteroid is visible; if not no need to check for collisions.
  * @return an Explosion in case of a collision, None otherwise.
  */
-std::optional<Explosion> Asteroid::checkForCollision(
+void Asteroid::checkForCollision(
         const std::shared_ptr<PhaserBlastQueuePointer> phaserBlasts,
+        const std::shared_ptr<ExplosionQueue> explosions,
         const std::shared_ptr<Player> player, // shouldn't own the player
         const std::shared_ptr<bool> running, // shouldn't own the ref
         const std::function<bool(Asteroid&)>& isInsideWindow) {
@@ -84,21 +87,33 @@ std::optional<Explosion> Asteroid::checkForCollision(
         // register player hit by reducing health.
         if (this->collidesWith(*player)) player->registerHit(this->getIdentifier());
 
-        if (phaserBlasts->filter([&](std::unique_ptr<PhaserBlast>& b) { return !this->collidesWith(*b); })) {
+        if (phaserBlasts->filter([&](std::unique_ptr<PhaserBlast>& pb) { return this->collidesWith(*pb); })) {
             player->incrementScore();
         }
 
         if (this->isHit()) {
             this->setEntityType(ASTEROID_FRAGMENTS);
-            return Explosion {this->getX(), this->getY() };
+            explosions->push( {this->getX(), this->getY() });
+            return;
         }
         std::this_thread::sleep_for(std::chrono::microseconds(10));
     }
-    return {};
+}
+
+/**  */
+void Asteroid::detectCollision(
+        const std::shared_ptr<PhaserBlastQueuePointer> phaserBlasts,
+        const std::shared_ptr<ExplosionQueue> explosions,
+        const std::shared_ptr<Player> player, // shouldn't own the player
+        const std::shared_ptr<bool> running, // shouldn't own the ref
+        const std::function<bool(Asteroid&)>& isInsideWindow) {
+
+    this->_thread = std::thread(&Asteroid::checkForCollision, this, phaserBlasts, explosions, player, running, isInsideWindow);
 }
 
 Asteroid::~Asteroid() {
-    std::cout << "destructing asteroid: " << _identifier << "\n";
+    if (_thread.joinable()) _thread.join();
+    std::cout << "destructing asteroid: " << this->getIdentifier() << "\n";
 }
 
 bool Asteroid::isHit() const {

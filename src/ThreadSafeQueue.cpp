@@ -10,11 +10,8 @@ template<typename T>
 bool ThreadSafeQueue<T>::filter(const std::function<bool(T &)> &predicate) {
     std::lock_guard<std::mutex> lock(_mutex);
     size_t N = _queue.size();
+    _queue.erase(std::remove_if(_queue.begin(), _queue.end(), predicate), _queue.end());
 
-    for (size_t idx = 0; idx < N; idx++) {
-        if (predicate(_queue.front())) _queue.emplace_back(std::move(_queue.front()));
-        _queue.pop_front();
-    }
     return N > _queue.size();
 }
 
