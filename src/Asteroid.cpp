@@ -100,12 +100,12 @@ void Asteroid::checkForCollision(
     }
 }
 
-/**  */
+/** Launch checkForCollision on its own thread.  */
 void Asteroid::detectCollision(
-        const std::shared_ptr<PhaserBlastQueuePointer> phaserBlasts,
-        const std::shared_ptr<ExplosionQueue> explosions,
-        const std::shared_ptr<Player> player, // shouldn't own the player
-        const std::shared_ptr<bool> running, // shouldn't own the ref
+        const std::shared_ptr<PhaserBlastQueuePointer>& phaserBlasts,
+        const std::shared_ptr<ExplosionQueue>& explosions,
+        const std::shared_ptr<Player>& player, // shouldn't own the player
+        const std::shared_ptr<bool>& running, // shouldn't own the ref
         const std::function<bool(Asteroid&)>& isInsideWindow) {
 
     this->_thread = std::thread(&Asteroid::checkForCollision, this, phaserBlasts, explosions, player, running, isInsideWindow);

@@ -50,10 +50,10 @@ public:
             const std::function<bool(Asteroid&)>& isInsideWindow);
 
     void detectCollision(
-            const std::shared_ptr<PhaserBlastQueuePointer> phaserBlasts,
-            const std::shared_ptr<ExplosionQueue> explosions,
-            const std::shared_ptr<Player> player,
-            const std::shared_ptr<bool> running,
+            const std::shared_ptr<PhaserBlastQueuePointer>& phaserBlasts,
+            const std::shared_ptr<ExplosionQueue>& explosions,
+            const std::shared_ptr<Player>& player,
+            const std::shared_ptr<bool>& running,
             const std::function<bool(Asteroid&)>& isInsideWindow);
 
     bool isHit() const;

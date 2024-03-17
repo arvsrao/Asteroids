@@ -11,6 +11,8 @@
 
 class Explosion;
 
+enum GameState { RUNNING, PAUSE, GAME_OVER };
+
 class Game {
 public:
 
@@ -22,6 +24,8 @@ public:
     void end();
 
 private:
+
+    GameState _state;
 
     std::shared_ptr<bool> _running;
     std::shared_ptr<Player> _player;

@@ -29,6 +29,9 @@ void Controller::doKeyDown(SDL_KeyboardEvent *event) {
         case SDL_SCANCODE_SPACE:
             _player->fire();
             break;
+        case SDL_SCANCODE_ESCAPE:
+            _player->getScore();
+            break;
         default:
             break;
     }

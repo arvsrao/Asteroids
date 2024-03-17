@@ -7,6 +7,7 @@
 using namespace std::chrono;
 
 Game::Game(std::shared_ptr<Player>& player, std::shared_ptr<PhaserBlastQueuePointer> phaserBlasts):
+        _state(RUNNING),
         _running(std::make_shared<bool>(true)),
         _player(player),
         _explosions(std::make_shared<ExplosionQueue>()),
@@ -14,6 +15,7 @@ Game::Game(std::shared_ptr<Player>& player, std::shared_ptr<PhaserBlastQueuePoin
         generateWaitTime{RandomNumberBetween(1, 3)} {}
 
 Game::Game(const int player_increment, const int rotation_increment):
+        _state(RUNNING),
         _running(std::make_shared<bool>(true)),
         _explosions(std::make_shared<ExplosionQueue>()),
         _phaserBlasts(std::make_shared<PhaserBlastQueuePointer>()),
@@ -102,6 +104,8 @@ void Game::run(Renderer& renderer, const std::shared_ptr<Controller>& controller
     while (*_running) {
 
         frame_start = SDL_GetTicks();
+
+        if (_state == PAUSE)
 
         renderer.clear();
         controller->handleInput(renderer, *_running);
