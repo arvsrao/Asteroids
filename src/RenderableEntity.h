@@ -5,8 +5,10 @@
 #include <algorithm>
 #include <SDL.h>
 
+/** type of the entity being rendered. */
 enum EntityType { ASTEROID, ASTEROID_FRAGMENTS, PHASER_BLAST, EXPLOSION, PLAYER };
 
+/** Trait for all entities that are rendered to the screen. */
 class RenderableEntity {
 
 public:
@@ -24,8 +26,8 @@ public:
 
     SDL_Point* getRotationCenter() const;
 
-    int getX() const;
-    int getY() const;
+    virtual int getX() const;
+    virtual int getY() const;
     void setX(int x);
     void setY(int y);
 
@@ -36,7 +38,7 @@ protected:
     EntityType _type;
 
 private:
-    int x_, y_, angle_;
+    int _x, _y, _angle;
     static inline const std::unique_ptr<SDL_Point> center_;
 
 };

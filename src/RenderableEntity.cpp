@@ -1,22 +1,22 @@
 #include "RenderableEntity.h"
 #include "util.h"
 
-RenderableEntity::RenderableEntity() : x_(0), y_(0), angle_(0) {}
+RenderableEntity::RenderableEntity() : _x(0), _y(0), _angle(0) {}
 
-RenderableEntity::RenderableEntity(int x, int y, int angle, EntityType type) : _type(type), x_(x), y_(y), angle_(angle) {};
+RenderableEntity::RenderableEntity(int x, int y, int angle, EntityType type) : _type(type), _x(x), _y(y), _angle(angle) {};
 
-int RenderableEntity::getX() const { return x_; }
+int RenderableEntity::getX() const { return _x; }
 
-int RenderableEntity::getY() const { return y_; }
+int RenderableEntity::getY() const { return _y; }
 
-int RenderableEntity::getAngle() const { return angle_; }
+int RenderableEntity::getAngle() const { return _angle; }
 
-void RenderableEntity::setX(int x) { x_ = x; }
+void RenderableEntity::setX(int x) { _x = x; }
 
-void RenderableEntity::setY(int y) { y_ = y; }
+void RenderableEntity::setY(int y) { _y = y; }
 
 void RenderableEntity::setAngle(int angle) {
-    angle_ = math::modulo(angle, 360);
+    _angle = math::modulo(angle, 360);
 }
 
 SDL_Point *RenderableEntity::getRotationCenter() const {

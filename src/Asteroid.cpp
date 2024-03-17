@@ -47,7 +47,7 @@ Asteroid& Asteroid::operator=(const Asteroid&& rhs) {
 
 void Asteroid::move() {
     setX(getX() - _MOVE_INCREMENT);
-    setY((int)_START_Y + (double) getHeight() * cos(_PERIOD * getX()));
+    setY((int)(_START_Y + (double) getHeight() * cos(_PERIOD * getX())));
 }
 
 int Asteroid::getWidth() const {

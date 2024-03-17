@@ -2,7 +2,7 @@
 
 #include <SDL_image.h>
 
-#include "renderer.h"
+#include "Renderer.h"
 #include "Player.h"
 #include "util.h"
 

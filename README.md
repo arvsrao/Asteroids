@@ -28,9 +28,38 @@ brew install sdl2 sdl2_image sdl2_ttf
 
 ## Rubric Points Met
 
-### Concurrency (2 of 5)
+### Compiling and Testing
+
+The project compiles in the Udacity workspace environment.
+
+### Loops, Functions, I/O
+
+| Criteria                                                                                 | Example                                                                                                                                                                                                                |
+|------------------------------------------------------------------------------------------|------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
+| The project accepts user input and processes the input. | The `Controller` class handles user input. See for instance `Controller::doKeyDown`.                                                                                                                                   |
+| The project reads data from a file and process the data, or the program writes data to a file. | The `Renderer` class reads texture files from the `/resources` directory. Specifically, in the member initialization list of constructor `Renderer::Renderer(const int h, const int w)`, line `137` of `Renderer.cpp`. |
+
+### Object Oriented Programming
+
+| Criteria                                                                                  | Example                                                                                                                                                              |
+|-------------------------------------------------------------------------------------------|----------------------------------------------------------------------------------------------------------------------------------------------------------------------|
+| Classes follow an appropriate inheritance hierarchy with virtual and override functions.  | `PhaserBlast`, `Asteroid`, `Player`, are all derived from an abstract class called `RenderableEntity`. Function `collidesWith` is overridden in the derived classes. |
+| Class constructors utilize member initialization lists.                                   | All class constructors in the project use initialization lists. See, for example, the constructor defined on line `9` of `Game.cpp`.                                 |
+| Templates generalize functions or classes in the project.                                 | Class `ThreadSafeQueue` wraps `std::queue<T>`; consequently, all of its member functions are templated.                                                              |
+
+### Memory Management (4/6)
+
+| Criteria                                                                                  | Example                                                                                                                                                                                                                                                                                                                  |
+|-------------------------------------------------------------------------------------------|--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
+| The project uses scope / Resource Acquisition Is Initialization (RAII) where appropriate. | `make_unique` and `make_shared` are used to create `PhaserBlast` and `Asteroid` entities, respectively. Additionally, `Asteroid` collision detection is run on threads managed by each `Asteroid` instance. Furthermore, collision detection threads are properly destructed when the Asteroids owning them are deleted. |
+| The project follows the Rule of 5.                                                        | class `Asteroid` and `Explosion` defines all 5 constructors.                                                                                                                                                                                                                                                             |
+| The project uses move semantics to move data instead of copying it, where possible.       | `PhaserBlast`, `Asteroid`, and `Explosion` entities are created and pushed into `ThreadSafeQueue` using move semantics. See line `30` of `Controller.cpp`.                                                                                                                                                               |
+| The project uses smart pointers instead of raw pointers.                                  | `make_unique` and `make_shared` are used to create `PhaserBlast` and `Asteroid` entities, respectively.                                                                                                                                                                                                                  |
+
+### Concurrency (2/4)
 
 #### _Multithreading_
+
 Threads are created in a few places.
 
 * On line `102` of `Game.cpp`, Asteroids are spawned on a thread separate from main.  `Game::Spawn` is 

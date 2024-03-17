@@ -19,6 +19,14 @@ public:
 
     explicit Player(const int move_increment, const int rotation_increment, std::shared_ptr<PhaserBlastQueuePointer> phaserBlasts);
 
+    // copy constructor and copy assignment operator are deleted
+    Player& operator=(const Player& rhs) = delete;
+    Player(Player& other) = delete;
+
+    // move constructor and move assignment operator are deleted
+    Player& operator=(const Player&& rhs) = delete;
+    Player(Player&& other) = delete;
+
     void fire() const;
     void rotateClockwise();
     void rotateCounterClockwise();

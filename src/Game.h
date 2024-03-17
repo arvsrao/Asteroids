@@ -5,6 +5,7 @@
 #include <deque>
 #include <thread>
 #include <future>
+
 #include "Controller.h"
 #include "Asteroid.h"
 #include "RandomNumberBetween.h"
@@ -18,14 +19,22 @@ public:
 
     Game(std::shared_ptr<Player>& player, std::shared_ptr<PhaserBlastQueuePointer> phaserBlasts);
     Game(const int player_increment, const int rotation_increment);
+
+    // copy constructor and copy assignment operator are deleted
+    Game& operator=(const Game& rhs) = delete;
+    Game(const Game& other) = delete;
+
+    // move constructor and move assignment operator are deleted
+    Game& operator=(const Game&& rhs) = delete;
+    Game(const Game&& other) = delete;
+
     ~Game();
 
     void run(Renderer &renderer, const std::shared_ptr<Controller>& controller, uint32_t target_frame_duration);
-    void end();
 
 private:
 
-    GameState _state;
+    GameState _state{RUNNING};
 
     std::shared_ptr<bool> _running;
     std::shared_ptr<Player> _player;
