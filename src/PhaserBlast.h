@@ -8,19 +8,20 @@
 
 class PhaserBlast : public RenderableEntity {
 public:
-    static inline const std::unique_ptr<SDL_Point> center_ = std::make_unique<SDL_Point>(SDL_Point {0, 0});
+    static inline const std::unique_ptr<SDL_Point> center_ = std::make_unique<SDL_Point>(SDL_Point{0, 0});
 
     PhaserBlast(int _x, int _y, int _angle);
 
-    PhaserBlast(const PhaserBlast& other);  // copy constructor
-    PhaserBlast& operator=(const PhaserBlast& other) = delete; // delete copy assignment constructor
+    PhaserBlast(const PhaserBlast &other);  // copy constructor
+    PhaserBlast &operator=(const PhaserBlast &other) = delete; // delete copy assignment constructor
 
-    PhaserBlast(const PhaserBlast&& other) noexcept; // move constructor
-    PhaserBlast& operator=(const PhaserBlast&& other) = delete; // delete move assignment constructor
+    PhaserBlast(const PhaserBlast &&other) noexcept; // move constructor
+    PhaserBlast &operator=(const PhaserBlast &&other) = delete; // delete move assignment constructor
 
     void move();
 
     int getWidth() const;
+
     int getHeight() const;
 
 private:
@@ -30,6 +31,7 @@ private:
     static constexpr int h = 4;
 
     static int computeXIncrement(const int angle);
+
     static int computeYIncrement(const int angle);
 };
 

@@ -10,12 +10,16 @@ class ThreadSafeQueue {
 public:
 
     void pop();
+
     int size();
 
-    const T& back();
+    const T &back();
+
     void push(T &&t);
+
     void foreach(const std::function<void(T &)> &func);
-    bool filter(const std::function<bool(T&)>& predicate);
+
+    bool filter(const std::function<bool(T &)> &predicate);
 
 private:
     std::mutex _mutex;

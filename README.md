@@ -1,17 +1,17 @@
 # Asteroids Game
 
-## Submission for C++ Nanodegree Capstone
+### Submission for C++ Nanodegree Capstone
 
 <img src="resources/readme-pic.png"  width="50%" height="50%" alt="example game play">
 
-### How to Play
+## How to Play
 
 * Use arrow keys to move starship: :up_arrow:, :down_arrow:, :left_arrow:, and :right_arrow:
 * Rotate the ship clockwise by pressing $\textcolor{orange}{D}$.
 * Rotate the ship counterclockwise by pressing $\textcolor{orange}{A}$.
 * To fire phaser blasts press the $\textcolor{orange}{space bar}$.
 
-### Build the Project
+## Build the Project
 
 #### Get the SDL2 dependencies.
 

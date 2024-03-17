@@ -13,51 +13,57 @@
 struct Textures {
 
     // background texture
-    SDL_Texture* background;
+    SDL_Texture *background;
 
     // health texture
-    SDL_Texture* health;
+    SDL_Texture *health;
 
     // player texture
-    SDL_Texture* player;
+    SDL_Texture *player;
 
     // asteroid texture
-    SDL_Texture* asteroid;
+    SDL_Texture *asteroid;
 
     // asteroid fragments texture
-    SDL_Texture* asteroidFragments;
+    SDL_Texture *asteroidFragments;
 
     // phaser blast texture
-    SDL_Texture* phaserBlast;
+    SDL_Texture *phaserBlast;
 
     // explosion texture
-    SDL_Texture* explosion;
+    SDL_Texture *explosion;
 };
 
 class Renderer {
 public:
     Renderer(const int h, const int w);
 
-    Renderer(const int h, const int w, Textures& textures);
+    Renderer(const int h, const int w, Textures &textures);
 
     void clear();
-    void drawBackground();
-    void renderHealth(int health) const;
-    void present(int count) const;
-    void renderTexture(SDL_Texture *texture, const RenderableEntity& entity);
 
-    void renderTexture(const RenderableEntity &entity);
+    void drawBackground() const;
+
+    void renderHealth(int health) const;
+
+    void present(int count) const;
+
+    void renderTexture(SDL_Texture *texture, const RenderableEntity &entity) const;
+
+    void renderTexture(const RenderableEntity &entity) const;
 
     //Creates image from _font string
-    bool loadFromRenderedText(const std::string& textureText, const SDL_Color& textColor);
+    bool loadFromRenderedText(const std::string &textureText, const SDL_Color &textColor) const;
 
-    int  getScreenWidth() const;
-    int  generateY();
-    SDL_Texture* loadImage(const char* filename);
+    int getScreenWidth() const;
 
-    bool outsideScreen(const RenderableEntity& entity) const;
+    int generateY();
 
-    void wrapEntityCoordinates(RenderableEntity* entity) const;
+    SDL_Texture *loadImage(const char *filename) const;
+
+    bool outsideScreen(const RenderableEntity &entity) const;
+
+    void wrapEntityCoordinates(RenderableEntity *entity) const;
 
     ~Renderer();
 
@@ -65,13 +71,13 @@ private:
     const int SCREEN_WIDTH_, SCREEN_HEIGHT_;
 
     // the window into which stuff is rendered
-    SDL_Window* _window;
+    SDL_Window *_window;
 
     // render for the window
-    SDL_Renderer* _renderer;
+    SDL_Renderer *_renderer;
 
     //Globally used _font
-    TTF_Font* _font;
+    TTF_Font *_font;
 
     // background and health textures
     Textures _textures;

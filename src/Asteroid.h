@@ -1,6 +1,7 @@
 #ifndef ASTEROIDS_ASTEROID_H
 #define ASTEROIDS_ASTEROID_H
 
+#include <thread>
 #include <functional>
 #include <optional>
 
@@ -9,7 +10,7 @@
 #include "ThreadSafeQueue.h"
 
 /** Type alias for the phaser blast queue. It is meant to be shared. */
-using PhaserBlastPointer      = std::unique_ptr<PhaserBlast>;
+using PhaserBlastPointer = std::unique_ptr<PhaserBlast>;
 using PhaserBlastQueuePointer = ThreadSafeQueue<PhaserBlastPointer>;
 
 /** Type alias for the explosion queue. It is meant to be shared. */
@@ -26,35 +27,39 @@ public:
     Asteroid(const Asteroid &&rhs);
 
     // copy assignment operator
-    Asteroid& operator=(const Asteroid& rhs);
+    Asteroid &operator=(const Asteroid &rhs);
 
     // move assignment operator
-    Asteroid& operator=(const Asteroid&& rhs);
+    Asteroid &operator=(const Asteroid &&rhs);
 
-    // desctructor
+    // destructor
     ~Asteroid();
 
     void move();
+
     int getWidth() const override;
+
     int getHeight() const override;
+
     int getIdentifier() const;
+
     double getPeriod() const;
 
-    bool collidesWith(RenderableEntity& other) override;
+    bool collidesWith(RenderableEntity &other) override;
 
     void checkForCollision(
             const std::shared_ptr<PhaserBlastQueuePointer> phaserBlasts,
             const std::shared_ptr<ExplosionQueue> explosions,
             const std::shared_ptr<Player> player,
             const std::shared_ptr<bool> running,
-            const std::function<bool(Asteroid&)>& isInsideWindow);
+            const std::function<bool(Asteroid &)> &isInsideWindow);
 
     void detectCollision(
-            const std::shared_ptr<PhaserBlastQueuePointer>& phaserBlasts,
-            const std::shared_ptr<ExplosionQueue>& explosions,
-            const std::shared_ptr<Player>& player,
-            const std::shared_ptr<bool>& running,
-            const std::function<bool(Asteroid&)>& isInsideWindow);
+            const std::shared_ptr<PhaserBlastQueuePointer> &phaserBlasts,
+            const std::shared_ptr<ExplosionQueue> &explosions,
+            const std::shared_ptr<Player> &player,
+            const std::shared_ptr<bool> &running,
+            const std::function<bool(Asteroid &)> &isInsideWindow);
 
     bool isHit() const;
 

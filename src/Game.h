@@ -12,25 +12,30 @@
 
 class Explosion;
 
-enum GameState { RUNNING, PAUSE, GAME_OVER };
+enum GameState {
+    RUNNING, PAUSE, GAME_OVER
+};
 
 class Game {
 public:
 
-    Game(std::shared_ptr<Player>& player, std::shared_ptr<PhaserBlastQueuePointer> phaserBlasts);
+    Game(std::shared_ptr<Player> &player, std::shared_ptr<PhaserBlastQueuePointer> phaserBlasts);
+
     Game(const int player_increment, const int rotation_increment);
 
     // copy constructor and copy assignment operator are deleted
-    Game& operator=(const Game& rhs) = delete;
-    Game(const Game& other) = delete;
+    Game &operator=(const Game &rhs) = delete;
+
+    Game(const Game &other) = delete;
 
     // move constructor and move assignment operator are deleted
-    Game& operator=(const Game&& rhs) = delete;
-    Game(const Game&& other) = delete;
+    Game &operator=(const Game &&rhs) = delete;
+
+    Game(const Game &&other) = delete;
 
     ~Game();
 
-    void run(Renderer &renderer, const std::shared_ptr<Controller>& controller, uint32_t target_frame_duration);
+    void run(Renderer &renderer, const std::shared_ptr<Controller> &controller, uint32_t target_frame_duration);
 
 private:
 
@@ -46,10 +51,13 @@ private:
 
     RandomNumberBetween generateWaitTime;
 
-    void spawn(Renderer& renderer);
-    void renderExplosions(Renderer &renderer);
-    void renderAsteroids(Renderer& renderer);
-    void renderPhaserBlasts(Renderer& renderer);
+    void spawn(Renderer &renderer);
+
+    void renderExplosions(const Renderer &renderer);
+
+    void renderAsteroids(const Renderer &renderer);
+
+    void renderPhaserBlasts(const Renderer &renderer);
 };
 
 

@@ -10,40 +10,53 @@
 #include <list>
 
 /** Type alias for the phaser blast queue. It is meant to be shared. */
-using PhaserBlastPointer      = std::unique_ptr<PhaserBlast>;
+using PhaserBlastPointer = std::unique_ptr<PhaserBlast>;
 using PhaserBlastQueuePointer = ThreadSafeQueue<PhaserBlastPointer>;
 
 class Player : public RenderableEntity {
 
 public:
 
-    explicit Player(const int move_increment, const int rotation_increment, std::shared_ptr<PhaserBlastQueuePointer> phaserBlasts);
+    explicit Player(const int move_increment, const int rotation_increment,
+                    std::shared_ptr<PhaserBlastQueuePointer> phaserBlasts);
 
     // copy constructor and copy assignment operator are deleted
-    Player& operator=(const Player& rhs) = delete;
-    Player(Player& other) = delete;
+    Player &operator=(const Player &rhs) = delete;
+
+    Player(Player &other) = delete;
 
     // move constructor and move assignment operator are deleted
-    Player& operator=(const Player&& rhs) = delete;
-    Player(Player&& other) = delete;
+    Player &operator=(const Player &&rhs) = delete;
+
+    Player(Player &&other) = delete;
 
     void fire() const;
+
     void rotateClockwise();
+
     void rotateCounterClockwise();
+
     void moveUp();
+
     void moveDown();
+
     void moveLeft();
+
     void moveRight();
 
     int getWidth() const override;
+
     int getHeight() const override;
 
     void incrementScore();
+
     void registerHit(int identifier);
+
     int getScore() const;
+
     int getHealth() const;
 
-    bool collidesWith(RenderableEntity& other) override;
+    bool collidesWith(RenderableEntity &other) override;
 
     std::string toString() const;
 

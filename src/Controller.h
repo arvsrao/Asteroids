@@ -10,14 +10,16 @@ public:
     explicit Controller(std::shared_ptr<Player> player);
 
     // copy constructor and copy assignment operator are deleted
-    Controller& operator=(const Controller& rhs) = delete;
-    Controller(const Controller& other) = delete;
+    Controller &operator=(const Controller &rhs) = delete;
+
+    Controller(const Controller &other) = delete;
 
     // move constructor and move assignment operator are deleted
-    Controller& operator=(const Controller&& rhs) = delete;
-    Controller(const Controller&& other) = delete;
+    Controller &operator=(const Controller &&rhs) = delete;
 
-    void handleInput(Renderer& renderer, bool &running);
+    Controller(const Controller &&other) = delete;
+
+    void handleInput(const Renderer &renderer, bool &running);
 
 private:
     std::shared_ptr<Player> _player;
@@ -25,4 +27,5 @@ private:
     void doKeyDown(SDL_KeyboardEvent *event);
 
 };
+
 #endif //ASTEROIDS_CONTROLLER_H
