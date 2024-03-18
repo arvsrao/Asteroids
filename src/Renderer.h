@@ -52,8 +52,9 @@ public:
 
     void renderTexture(const RenderableEntity &entity) const;
 
-    //Creates image from _font string
-    bool loadFromRenderedText(const std::string &textureText, const SDL_Color &textColor, int x, int y) const;
+    bool renderScore(const std::string &score, const SDL_Color &textColor) const;
+
+    bool gameOverMessage(const SDL_Color &textColor) const;
 
     int getScreenWidth() const;
 
@@ -85,6 +86,9 @@ private:
     RandomNumberBetween _randomY;
 
     void init();
+
+    // Creates image from _font string
+    bool loadFromRenderedText(const std::string &textureText, const SDL_Color &textColor, int x, int y) const;
 
 };
 

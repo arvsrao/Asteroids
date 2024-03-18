@@ -168,7 +168,17 @@ Renderer::~Renderer() {
   SDL_Quit();
 }
 
-bool Renderer::loadFromRenderedText(const std::string &text, const SDL_Color &textColor, int x, int y) const {
+bool Renderer::renderScore(const std::string &score, const SDL_Color &textColor) const {
+  return loadFromRenderedText(score, textColor, 5, 5);
+}
+
+bool Renderer::gameOverMessage(const SDL_Color &textColor) const {
+  return loadFromRenderedText("GAME OVER !!", textColor, getScreenWidth() / 3,
+                              getScreenWidth() / 3);
+}
+
+bool Renderer::loadFromRenderedText(const std::string &text, const SDL_Color &textColor, int x,
+                                    int y) const {
   // Render text surface
   SDL_Surface *textSurface = TTF_RenderText_Solid(_font, text.c_str(), textColor);
   auto mTexture            = SDL_CreateTextureFromSurface(_renderer, textSurface);

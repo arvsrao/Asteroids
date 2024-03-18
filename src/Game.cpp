@@ -72,6 +72,7 @@ void Game::renderPhaserBlasts(const Renderer &renderer) {
       [&](std::unique_ptr<PhaserBlast> &b) { return renderer.outsideScreen(*b); });
 }
 
+/** Move and render　Explosions */
 void Game::renderExplosions(const Renderer &renderer) {
   _explosions->filter([&](Explosion &ex) { return !ex.isFrameCountPositive(); });
   _explosions->foreach ([&](Explosion &ex) { renderer.renderTexture(ex); });
@@ -101,11 +102,11 @@ void Game::run(Renderer &renderer, const std::shared_ptr<Controller> &controller
     renderAsteroids(renderer);
     renderPhaserBlasts(renderer);
     renderExplosions(renderer);
-    renderer.loadFromRenderedText("score:" + std::to_string(_player->getScore()), color, 5, 5);
+    renderer.renderScore("score:" + std::to_string(_player->getScore()), color);
 
     // GAME OVER if player has no more health
     if (_player->getHealth() < 1) {
-      renderer.loadFromRenderedText("GAME OVER !!", color, renderer.getScreenWidth() / 3,  renderer.getScreenWidth() / 3);
+      renderer.gameOverMessage(color);
     }
 
     renderer.present((int)_threads.size() + _asteroids.size());
