@@ -2,7 +2,8 @@
 
 ### Submission for C++ Nanodegree Capstone
 
-<img src="resources/readme-pic.png"  width="50%" height="50%" alt="example game play">
+<img src="resources/game-play0.png"  width="50%" height="50%" alt="example game play">
+<img src="resources/game-play1.png"  width="50%" height="50%" alt="example game play">
 
 ## How to Play
 
@@ -66,7 +67,7 @@ Threads are created in a few places.
 ```c++
     // start asteroid spawning on its own thread.
     _threads.emplace_back(&Game::spawn, this, std::ref(renderer));
-```     
+```
 
 * In the function `Game::Spawn`, collision detection is started for each new asteroid on a thread owned / managed by the asteroid.
 
@@ -75,7 +76,7 @@ Threads are created in a few places.
 void Asteroid::detectCollision(...) {
 this->_thread = std::thread(&Asteroid::checkForCollision, this, phaserBlasts, explosions, player, running, isInsideWindow);
 }
-```     
+```
 
 #### _Use of mutexes & locks_
 
