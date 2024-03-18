@@ -50,12 +50,12 @@ The project compiles in the Udacity workspace environment.
 
 ### Memory Management (4/6)
 
-| Criteria                                                                                  | Example                                                                                                                                                                                                                                                                                                                  |
-|-------------------------------------------------------------------------------------------|--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
-| The project uses scope / Resource Acquisition Is Initialization (RAII) where appropriate. | `make_unique` and `make_shared` are used to create `PhaserBlast` and `Asteroid` entities, respectively. Additionally, `Asteroid` collision detection is run on threads managed by each `Asteroid` instance. Furthermore, collision detection threads are properly destructed when the Asteroids owning them are deleted. |
-| The project follows the Rule of 5.                                                        | class `Asteroid` and `Explosion` defines all 5 constructors.                                                                                                                                                                                                                                                             |
-| The project uses move semantics to move data instead of copying it, where possible.       | `PhaserBlast`, `Asteroid`, and `Explosion` entities are created and pushed into `ThreadSafeQueue` using move semantics. See line `30` of `Controller.cpp`.                                                                                                                                                               |
-| The project uses smart pointers instead of raw pointers.                                  | `make_unique` and `make_shared` are used to create `PhaserBlast` and `Asteroid` entities, respectively.                                                                                                                                                                                                                  |
+| Criteria                                                                                  | Example                                                                                                                                                                                                                                                                                                                                                                                                                                   |
+|-------------------------------------------------------------------------------------------|-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
+| The project uses scope / Resource Acquisition Is Initialization (RAII) where appropriate. | `make_unique` and `make_shared` are used to create `PhaserBlast` and `Asteroid` entities, respectively. Additionally, `Asteroid` collision detection is run on threads managed by each `Asteroid` instance. Furthermore, collision detection threads are properly destructed when the Asteroids owning them are deleted.                                                                                                                  |
+| The project follows the Rule of 5.                                                        | Classes `Asteroid` and `Explosion` define all 5 constructors.                                                                                                                                                                                                                                                                                                                                                                             |
+| The project uses move semantics to move data instead of copying it, where possible.       | Newly created `PhaserBlast`, `Asteroid`, and `Explosion` entities are pushed into their respective `ThreadSafeQueue`, by using move semantics. For instance, phaser blasts are create by a factory in the player instance when the corresponding key press event is captured in `Controller::doKeyDown`. The produced `PhaserBlast` instance is immediately moved into a `ThreadSafeQueue<PhaserBlast>` on line `30` of `Controller.cpp`. |
+| The project uses smart pointers instead of raw pointers.                                  | `make_unique` and `make_shared` are used to create `PhaserBlast` and `Asteroid` entities, respectively. For instance, see line `40` of `Game.cpp`.                                                                                                                                                                                                                                                                                        |
 
 ### Concurrency (2/4)
 
@@ -63,13 +63,13 @@ The project compiles in the Udacity workspace environment.
 
 Threads are created in a few places.
 
-* On line `102` of `Game.cpp`, Asteroids are spawned on a thread separate from main.  `Game::Spawn` is 
+* On line `102` of `Game.cpp`, Asteroids are spawned on a thread separate from main, by function`Game::Spawn`.
 ```c++
     // start asteroid spawning on its own thread.
     _threads.emplace_back(&Game::spawn, this, std::ref(renderer));
 ```
 
-* In the function `Game::Spawn`, collision detection is started for each new asteroid on a thread owned / managed by the asteroid.
+* In function `Game::Spawn`, after a new asteroid is created, collision detection for the asteroid is started on a thread owned / managed by the asteroid.
 
 ```c++
     /** Launch checkForCollision on its own thread.  */
