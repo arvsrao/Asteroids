@@ -75,20 +75,25 @@ void Asteroid::checkForCollision(const std::shared_ptr<PhaserBlastQueuePointer> 
                                  const std::function<bool(Asteroid &)> &isInsideWindow) {
   while (isInsideWindow(*this) && *running) {
     // register player hit by reducing health.
-    if (this->collidesWith(*player)) player->registerHit(this->getIdentifier());
+    if (this->collidesWith(*player)) {
+      player->registerHit();
+      explosions->push({this->getX(), this->getY()});
+
+      // return eagerly so that multiple hits by this asteroid are not registered.
+      return;
+    }
 
     // any phaser blast hitting this asteroid are removed and the player's score is incremented.
     if (phaserBlasts->filter(
             [&](std::unique_ptr<PhaserBlast> &pb) { return this->collidesWith(*pb); })) {
       player->incrementScore();
-    }
-
-    if (this->isHit()) {
-      this->setEntityType(ASTEROID_FRAGMENTS);
       explosions->push({this->getX(), this->getY()});
+
+      // return eagerly so that multiple hits on the same asteroid are not registered.
       return;
     }
-    std::this_thread::sleep_for(std::chrono::microseconds(10));
+
+    std::this_thread::sleep_for(std::chrono::microseconds(5));
   }
 }
 
@@ -111,5 +116,8 @@ bool Asteroid::isHit() const { return _hit; }
 
 bool Asteroid::collidesWith(RenderableEntity &other) {
   _hit = RenderableEntity::collidesWith(other);
+  if (_hit) {
+    this->setEntityType(ASTEROID_FRAGMENTS);
+  }
   return _hit;
 }

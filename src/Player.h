@@ -50,7 +50,7 @@ public:
 
     void incrementScore();
 
-    void registerHit(int identifier);
+    void registerHit();
 
     int getScore() const;
 
@@ -66,7 +66,6 @@ private:
     static constexpr int h = 111;
 
     std::shared_ptr<PhaserBlastQueuePointer> _phaserBlasts;
-    std::set<int> asteroidIdentifiers;
 
     int _health{3}, score_{0};
 };

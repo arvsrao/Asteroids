@@ -103,7 +103,7 @@ void Game::run(Renderer &renderer, const std::shared_ptr<Controller> &controller
     renderExplosions(renderer);
 
     renderer.loadFromRenderedText("score:" + std::to_string(_player->getScore()), color);
-    renderer.present(static_cast<int>(_threads.size()));
+    renderer.present((int)_threads.size() + _asteroids.size());
 
     // Keep track of how long each loop through the input/update/render cycle takes.
     frame_end      = SDL_GetTicks();

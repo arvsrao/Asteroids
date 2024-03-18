@@ -20,6 +20,7 @@ auto controller = std::make_shared<Controller>(player);
 int main(int argc, char *args[]) {
   game->run(renderer, controller, kMsPerFrame);
 
-  std::cout << "Game Over !!" << "\n";
+  std::cout << "Game Over !!"
+            << "\n";
   return 0;
 }

@@ -20,9 +20,9 @@ public:
     // move assignment operator
     Explosion &operator=(const Explosion &&rhs);
 
-    int getWidth() const;
+    int getWidth() const override;
 
-    int getHeight() const;
+    int getHeight() const override;
 
     /** The explosion glyph is rendered for 30 frames, approx. 1/2 seconds. */
     bool isFrameCountPositive();

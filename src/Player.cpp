@@ -52,9 +52,4 @@ bool Player::collidesWith(RenderableEntity &other) {
 
 void Player::incrementScore() { ++score_; }
 
-void Player::registerHit(int identifier) {
-  if (!asteroidIdentifiers.count(identifier)) {
-    _health -= 1;
-  }
-  asteroidIdentifiers.insert(identifier);
-}
+void Player::registerHit() { _health -= 1; }
