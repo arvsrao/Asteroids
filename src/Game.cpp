@@ -88,7 +88,7 @@ void Game::run(Renderer &renderer, const std::shared_ptr<Controller> &controller
   // start asteroid spawning on its own thread.
   _threads.emplace_back(&Game::spawn, this, std::ref(renderer));
 
-  while (*_running) {
+  while (*_running && _state == RUNNING) {
     frame_start = SDL_GetTicks();
 
     renderer.clear();
@@ -101,8 +101,13 @@ void Game::run(Renderer &renderer, const std::shared_ptr<Controller> &controller
     renderAsteroids(renderer);
     renderPhaserBlasts(renderer);
     renderExplosions(renderer);
+    renderer.loadFromRenderedText("score:" + std::to_string(_player->getScore()), color, 5, 5);
 
-    renderer.loadFromRenderedText("score:" + std::to_string(_player->getScore()), color);
+    // GAME OVER if player has no more health
+    if (_player->getHealth() < 1) {
+      renderer.loadFromRenderedText("GAME OVER !!", color, renderer.getScreenWidth() / 3,  renderer.getScreenWidth() / 3);
+    }
+
     renderer.present((int)_threads.size() + _asteroids.size());
 
     // Keep track of how long each loop through the input/update/render cycle takes.

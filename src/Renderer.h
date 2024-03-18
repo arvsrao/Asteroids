@@ -53,7 +53,7 @@ public:
     void renderTexture(const RenderableEntity &entity) const;
 
     //Creates image from _font string
-    bool loadFromRenderedText(const std::string &textureText, const SDL_Color &textColor) const;
+    bool loadFromRenderedText(const std::string &textureText, const SDL_Color &textColor, int x, int y) const;
 
     int getScreenWidth() const;
 

@@ -168,14 +168,14 @@ Renderer::~Renderer() {
   SDL_Quit();
 }
 
-bool Renderer::loadFromRenderedText(const std::string &text, const SDL_Color &textColor) const {
+bool Renderer::loadFromRenderedText(const std::string &text, const SDL_Color &textColor, int x, int y) const {
   // Render text surface
   SDL_Surface *textSurface = TTF_RenderText_Solid(_font, text.c_str(), textColor);
   auto mTexture            = SDL_CreateTextureFromSurface(_renderer, textSurface);
 
   SDL_Rect dest;
-  dest.x = 5;
-  dest.y = 5;
+  dest.x = x;
+  dest.y = y;
   SDL_QueryTexture(mTexture, nullptr, nullptr, &dest.w, &dest.h);
   SDL_RenderCopy(_renderer, mTexture, nullptr, &dest);
 
