@@ -2,8 +2,7 @@
 
 ### Submission for C++ Nanodegree Capstone
 
-<img src="resources/game-play0.png"  width="50%" height="50%" alt="example game play">
-<img src="resources/game-play1.png"  width="50%" height="50%" alt="example game play">
+<img src="resources/asteroids-spiel-demo.gif" width="75%" height="75%" alt="example game play">
 
 ## How to Play
 
